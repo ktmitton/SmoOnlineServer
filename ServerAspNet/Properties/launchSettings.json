@@ -8,9 +8,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5231",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "TcpConfiguration:0:Name": "",
-        "TcpConfiguration:0:Port": "5486"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "https": {

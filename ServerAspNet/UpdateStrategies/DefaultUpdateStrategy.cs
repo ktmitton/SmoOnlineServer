@@ -1,5 +1,4 @@
 using SuperMarioOdysseyOnline.Server.Packets;
-using SuperMarioOdysseyOnline.Server.Players;
 
 namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
 

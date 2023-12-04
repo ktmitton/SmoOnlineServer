@@ -5,43 +5,32 @@ namespace SuperMarioOdysseyOnline.Server.Events;
 
 public interface IEventStream : IAsyncDisposable
 {
-    Task InitializeAsync(CancellationToken cancellationToken);
-
     Task Task { get; }
 }
 
-internal class DefaultEventStream(IPlayerConnectionAccessor playerConnectionContextAccessor, IPacketHandler packetHandler) : IEventStream
+internal class DefaultEventStream : IEventStream
 {
-    private readonly IPlayerConnectionAccessor _playerConnectionContextAccessor = playerConnectionContextAccessor;
+    private readonly IPlayerConnectionAccessor _playerConnectionContextAccessor;
 
-    private readonly IPacketHandler _packetHandler = packetHandler;
+    private readonly IPacketHandler _packetHandler;
 
-    private CancellationTokenSource? _cancellationTokenSource;
+    private CancellationTokenSource _cancellationTokenSource = new();
 
-    public Task Task { get; private set; } = Task.CompletedTask;
+    public Task Task { get; init; }
 
-    public async ValueTask DisposeAsync()
+    public DefaultEventStream(IPlayerConnectionAccessor playerConnectionContextAccessor, IPacketHandler packetHandler)
     {
-        if (_cancellationTokenSource is not null)
-        {
-            await _cancellationTokenSource.CancelAsync();
-        }
-    }
-
-    public Task InitializeAsync(CancellationToken cancellationToken)
-    {
-        if (Interlocked.CompareExchange(ref _cancellationTokenSource, new CancellationTokenSource(), null) is not null)
-        {
-            throw new Exception("EventStream is already running.");
-        }
+        _playerConnectionContextAccessor = playerConnectionContextAccessor;
+        _packetHandler = packetHandler;
 
         Task = Task.WhenAny(
             ListenForIncomingPacketsAsync(_cancellationTokenSource.Token),
             ListenForUpdatePacketsAsync(_cancellationTokenSource.Token)
         );
-
-        return Task.CompletedTask;
     }
+
+    public async ValueTask DisposeAsync()
+        => await _cancellationTokenSource.CancelAsync();
 
     private async Task ListenForIncomingPacketsAsync(CancellationToken cancellationToken)
     {

@@ -1,12 +1,18 @@
 using System.Buffers;
 using Bedrock.Framework.Protocols;
+using SuperMarioOdysseyOnline.Server.Connections;
 using SuperMarioOdysseyOnline.Server.Extensions;
 using SuperMarioOdysseyOnline.Server.Packets;
 using SuperMarioOdysseyOnline.Server.Packets.Data;
-using SuperMarioOdysseyOnline.Server.Tcp;
 using SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
 namespace SuperMarioOdysseyOnline.Server.Players;
+
+public static class TcpPlayerConnectionServiceExtensions
+{
+    public static IServiceCollection AddTcpPlayerConnection(this IServiceCollection services)
+        => services.AddScoped<TcpPlayerConnection>();
+}
 
 public class TcpPlayerConnection
     : IPlayerConnection, IMessageReader<Packet?>, IMessageWriter<Packet>
@@ -25,7 +31,7 @@ public class TcpPlayerConnection
 
     public IEnumerable<IUpdateStrategy> AvailableUpdateStrategies { get; }
 
-    public TcpPlayerConnection(ITcpConnectionContextAccessor connectionContextAccessor, IPlayerManager playerManager, IEnumerable<IUpdateStrategy> updateStrategies)
+    public TcpPlayerConnection(IConnectionContextAccessor connectionContextAccessor, IPlayerManager playerManager, IEnumerable<IUpdateStrategy> updateStrategies)
     {
         ArgumentNullException.ThrowIfNull(connectionContextAccessor.ConnectionContext);
 
