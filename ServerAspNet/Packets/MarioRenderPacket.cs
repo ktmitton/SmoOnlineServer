@@ -1,14 +1,24 @@
 ﻿using System.Buffers;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobby;
 using SuperMarioOdysseyOnline.Server.Models;
-using SuperMarioOdysseyOnline.Server.Players;
 
-namespace SuperMarioOdysseyOnline.Server.Packets.Data;
+namespace SuperMarioOdysseyOnline.Server.Packets;
 
-public record MarioRenderData(Location Location, Animation Animation) : IPacketData
+public record MarioRenderPacket(Guid Id, MarioRenderData Data) : IPacket<MarioRenderData>, IPacket
 {
     public PacketType Type => PacketType.MarioRenderData;
 
+    public MarioRenderPacket(Guid id, ReadOnlySequence<byte> data)
+        : this(id, new MarioRenderData(data))
+    {
+    }
+
+    IPacketData IPacket<IPacketData>.Data => Data;
+}
+
+public record MarioRenderData(Location Location, Animation Animation) : IPacketData
+{
     public MarioRenderData(ReadOnlySequence<byte> data)
         : this(
             new Location(

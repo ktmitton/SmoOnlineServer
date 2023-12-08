@@ -1,15 +1,25 @@
 ﻿using System.Buffers;
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobby;
 using SuperMarioOdysseyOnline.Server.Models;
-using SuperMarioOdysseyOnline.Server.Players;
 
-namespace SuperMarioOdysseyOnline.Server.Packets.Data;
+namespace SuperMarioOdysseyOnline.Server.Packets;
 
-public record CostumeData(Costume MariosCostume, Costume CappysCostume) : IPacketData
+public record CostumePacket(Guid Id, CostumeData Data) : IPacket<CostumeData>, IPacket
 {
     public PacketType Type => PacketType.Costume;
 
+    public CostumePacket(Guid id, ReadOnlySequence<byte> data)
+        : this(id, new CostumeData(data))
+    {
+    }
+
+    IPacketData IPacket<IPacketData>.Data => Data;
+}
+
+public record CostumeData(Costume MariosCostume, Costume CappysCostume) : IPacketData
+{
     private const int NameSize = 32;
 
     public CostumeData(ReadOnlySequence<byte> data)

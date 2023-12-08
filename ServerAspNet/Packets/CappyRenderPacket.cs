@@ -1,15 +1,25 @@
 ﻿using System.Buffers;
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobby;
 using SuperMarioOdysseyOnline.Server.Models;
-using SuperMarioOdysseyOnline.Server.Players;
 
-namespace SuperMarioOdysseyOnline.Server.Packets.Data;
+namespace SuperMarioOdysseyOnline.Server.Packets;
 
-public record CappyRenderData(Location Location, Animation Animation, bool IsThrown) : IPacketData
+public record CappyRenderPacket(Guid Id, CappyRenderData Data) : IPacket<CappyRenderData>, IPacket
 {
     public PacketType Type => PacketType.CappyRenderData;
 
+    public CappyRenderPacket(Guid id, ReadOnlySequence<byte> data)
+        : this(id, new CappyRenderData(data))
+    {
+    }
+
+    IPacketData IPacket<IPacketData>.Data => Data;
+}
+
+public record CappyRenderData(Location Location, Animation Animation, bool IsThrown) : IPacketData
+{
     public CappyRenderData(ReadOnlySequence<byte> data)
         : this(
             new Location(data.ReadVector3(), data.ReadQuaternion(12)),

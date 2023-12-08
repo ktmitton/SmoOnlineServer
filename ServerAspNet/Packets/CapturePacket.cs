@@ -1,15 +1,25 @@
 ﻿using System.Buffers;
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobby;
 using SuperMarioOdysseyOnline.Server.Models;
-using SuperMarioOdysseyOnline.Server.Players;
 
-namespace SuperMarioOdysseyOnline.Server.Packets.Data;
+namespace SuperMarioOdysseyOnline.Server.Packets;
 
-public record CaptureData(CapturedEntity CapturedEntity) : IPacketData
+public record CapturePacket(Guid Id, CaptureData Data) : IPacket<CaptureData>, IPacket
 {
     public PacketType Type => PacketType.Capture;
 
+    IPacketData IPacket<IPacketData>.Data => Data;
+
+    public CapturePacket(Guid id, ReadOnlySequence<byte> data)
+        : this(id, new CaptureData(data))
+    {
+    }
+}
+
+public record CaptureData(CapturedEntity CapturedEntity) : IPacketData
+{
     public CaptureData(ReadOnlySequence<byte> data)
         : this(new CapturedEntity(data.ReadString()))
     {

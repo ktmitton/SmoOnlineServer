@@ -1,6 +1,12 @@
+using SuperMarioOdysseyOnline.Server.Connections;
 using SuperMarioOdysseyOnline.Server.Packets;
 
 namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
+
+public interface IUpdateStrategyFactory
+{
+    Task<IUpdateStrategy> CreateAsync(IPacketConnection packetConnection, CancellationToken cancellationToken);
+}
 
 public interface IUpdateStrategy
 {
@@ -20,7 +26,7 @@ public interface IUpdateStrategy
 
     Task RefreshConnectionRatingAsync(CancellationToken cancellationToken);
 
-    IEnumerable<Packet> GetNextUpdateCollection();
+    IEnumerable<IPacket> GetNextUpdateCollection();
 
     // bool ShouldSendMarioLocationUpdate(IPlayer remotePlayer, DateTime lastUpdateTimestamp);
 
@@ -31,4 +37,50 @@ public interface IUpdateStrategy
     // bool ShouldSendCaptureUpdate(IPlayer remotePlayer, string lastCaptureModelName, DateTime lastUpdateTimestamp);
 
     // bool ShouldSendStageUpdate(IPlayer remotePlayer, byte lastStageId, DateTime lastUpdateTimestamp);
+
+    // private async Task SendRemotePlayerUpdatesAsync(IPlayer remotePlayer, CancellationToken cancellationToken)
+    // {
+    //     var oldLog = _playerUpdateLogs.GetOrAdd(remotePlayer, (x) => {
+    //         return new PlayerUpdateLog(
+    //             DateTime.MinValue,
+    //             (DateTime.MinValue, string.Empty, string.Empty),
+    //             (DateTime.MinValue, default),
+    //             (DateTime.MinValue, string.Empty),
+    //             (DateTime.MinValue, default)
+    //         );
+    //     });
+
+    //     if (_updateStrategy.ShouldSendMarioLocationUpdate(_connectedPlayer, remotePlayer, oldLog.LastLocationUpdateTimestamp))
+    //     {
+    //         await stream.WritePacketAsync(new Packet(new MarioLocationData(remotePlayer)),cancellationToken);
+    //     }
+
+    //     if (_updateStrategy.ShouldSendCosutmeUpdate(remotePlayer, oldLog.LastCostumeUpdate.MarioCostumeName, oldLog.LastCostumeUpdate.CappyCostumeName, oldLog.LastCostumeUpdate.Timestamp))
+    //     {
+    //         await stream.WritePacketAsync(new Packet(new CostumeData(remotePlayer)), cancellationToken);
+    //     }
+
+    //     if (_updateStrategy.ShouldSendCappyLocationUpdate(remotePlayer, oldLog.LastCappyUpdate.IsThrown, oldLog.LastCappyUpdate.Timestamp))
+    //     {
+    //         await stream.WritePacketAsync(new Packet(new CappyLocationData(remotePlayer)), cancellationToken);
+    //     }
+
+    //     if (_updateStrategy.ShouldSendCaptureUpdate(remotePlayer, oldLog.LastCaptureUpdate.ModelName, oldLog.LastCaptureUpdate.Timestamp))
+    //     {
+    //         await stream.WritePacketAsync(new Packet(new CaptureData(remotePlayer)), cancellationToken);
+    //     }
+
+    //     if (_updateStrategy.ShouldSendStageUpdate(remotePlayer, oldLog.LastStageUpdate.Id, oldLog.LastStageUpdate.Timestamp))
+    //     {
+    //         await stream.WritePacketAsync(new Packet(new MarioStageData(remotePlayer)), cancellationToken);
+    //     }
+    // }
+
+    // private record PlayerUpdateLog(
+    //     DateTime LastLocationUpdateTimestamp,
+    //     (DateTime Timestamp, string MarioCostumeName, string CappyCostumeName) LastCostumeUpdate,
+    //     (DateTime Timestamp, bool IsThrown) LastCappyUpdate,
+    //     (DateTime Timestamp, string ModelName) LastCaptureUpdate,
+    //     (DateTime Timestamp, byte Id) LastStageUpdate
+    // );
 }

@@ -1,8 +1,7 @@
 using SuperMarioOdysseyOnline.Server.Models;
 using SuperMarioOdysseyOnline.Server.Packets;
-using SuperMarioOdysseyOnline.Server.Packets.Data;
 
-namespace SuperMarioOdysseyOnline.Server.Players;
+namespace SuperMarioOdysseyOnline.Server.Lobby;
 
 public interface IPlayer
 {
@@ -20,7 +19,7 @@ public interface IPlayer
 
     Stage Stage { get; }
 
-    void HandleReceivedPacket(Packet packet);
+    void HandleReceivedPacket(IPacket packet);
 }
 
 internal class Player(Guid id) : IPlayer
@@ -39,7 +38,7 @@ internal class Player(Guid id) : IPlayer
 
     public Stage Stage { get; private set; } = new Stage();
 
-    public void HandleReceivedPacket(Packet packet)
+    public void HandleReceivedPacket(IPacket packet)
     {
         if (packet.Data is ConnectData connectData)
         {

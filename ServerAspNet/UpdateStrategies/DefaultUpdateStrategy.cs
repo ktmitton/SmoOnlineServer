@@ -1,11 +1,22 @@
+using SuperMarioOdysseyOnline.Server.Connections;
 using SuperMarioOdysseyOnline.Server.Packets;
 
 namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
 public static class DefaultUpdateStrategyServiceExtensions
 {
-    public static IServiceCollection AddDefaultUpdateStrategy(this IServiceCollection serviceCollection)
-        => serviceCollection.AddTransient<IUpdateStrategy, DefaultUpdateStrategy>();
+    public static IServiceCollection AddDefaultUpdateStrategyFactory(this IServiceCollection serviceCollection)
+        => serviceCollection.AddTransient<IUpdateStrategyFactory, DefaultUpdateStrategyFactory>();
+}
+
+internal class DefaultUpdateStrategyFactory : IUpdateStrategyFactory
+{
+    public Task<IUpdateStrategy> CreateAsync(IPacketConnection packetConnection, CancellationToken cancellationToken)
+    {
+        IUpdateStrategy strategy = new DefaultUpdateStrategy();
+
+        return Task.FromResult(strategy);
+    }
 }
 
 internal class DefaultUpdateStrategy : IUpdateStrategy
@@ -46,8 +57,8 @@ internal class DefaultUpdateStrategy : IUpdateStrategy
     public Task RefreshConnectionRatingAsync(CancellationToken cancellationToken)
         => Task.CompletedTask;
 
-    public IEnumerable<Packet> GetNextUpdateCollection()
-        => Enumerable.Empty<Packet>();
+    public IEnumerable<IPacket> GetNextUpdateCollection()
+        => Enumerable.Empty<IPacket>();
 
     // public bool ShouldSendMarioLocationUpdate(IPlayer remotePlayer, DateTime lastUpdateTimestamp)
     // {

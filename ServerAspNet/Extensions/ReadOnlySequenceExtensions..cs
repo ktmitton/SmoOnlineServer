@@ -90,7 +90,7 @@ internal static class SequenceReaderExtensions
         return true;
     }
 
-    public static bool TryReadPacket(this SequenceReader<byte> reader, out Packet? packet)
+    public static bool TryReadPacket(this SequenceReader<byte> reader, out IPacket? packet)
     {
         if (!reader.TryReadPacketHeader(out ReadOnlySequence<byte> header, out short dataSize) ||
             !reader.TryReadExact(HeaderSize + dataSize, out ReadOnlySequence<byte> data))
@@ -100,8 +100,30 @@ internal static class SequenceReaderExtensions
             return false;
         }
 
-        packet = Packet.Create(header, data.Slice(HeaderSize));
+        packet = CreatePacket(header, data.Slice(HeaderSize));
 
         return true;
+    }
+
+    private static IPacket CreatePacket(ReadOnlySequence<byte> header, ReadOnlySequence<byte> data)
+    {
+        var id = header.ReadGuid();
+        var type = (PacketType)header.ReadInt16(16);
+
+        return type switch
+        {
+            PacketType.CappyRenderData => new CappyRenderPacket(id, data),
+            PacketType.Capture => new CapturePacket(id, data),
+            PacketType.ChangeStage => new ChangeStagePacket(id, data),
+            PacketType.Connect => new ConnectPacket(id, data),
+            PacketType.Costume => new CostumePacket(id, data),
+            PacketType.Disconnect => new DisconnectPacket(id, data),
+            PacketType.PlayerStageData => new PlayerStagePacket(id, data),
+            PacketType.Init => new InitPacket(id, data),
+            PacketType.MarioRenderData => new MarioRenderPacket(id, data),
+            PacketType.Shine => new ShinePacket(id, data),
+            PacketType.Tag => new TagPacket(id, data),
+            _ => new UnhandledPacket(id, data),
+        };
     }
 }

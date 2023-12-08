@@ -2,15 +2,25 @@
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Extensions;
 
-namespace SuperMarioOdysseyOnline.Server.Packets.Data;
+namespace SuperMarioOdysseyOnline.Server.Packets;
+
+public record ChangeStagePacket(Guid Id, ChangeStageData Data) : IPacket<ChangeStageData>, IPacket
+{
+    public PacketType Type => PacketType.ChangeStage;
+
+    public ChangeStagePacket(Guid id, ReadOnlySequence<byte> data)
+        : this(id, new ChangeStageData(data))
+    {
+    }
+
+    IPacketData IPacket<IPacketData>.Data => Data;
+}
 
 public record ChangeStageData(string Stage, string Id, sbyte Scenario, byte SubScenarioType) : IPacketData
 {
     private const int IdSize = 16;
 
     private const int StageSize = 48;
-
-    public PacketType Type => PacketType.ChangeStage;
 
     public ChangeStageData(ReadOnlySequence<byte> data)
         : this(

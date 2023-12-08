@@ -19,6 +19,8 @@ public class LobbyConfiguration
 
 public record LobbyDetails(string Name, Uri Url)
 {
+    public Guid Id { get; } = Guid.NewGuid();
+
     public EndPoint? EndPoint
         => new IPEndPoint(
             Url.Host.ToLower() switch

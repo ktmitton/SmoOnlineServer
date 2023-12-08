@@ -1,15 +1,25 @@
 ﻿using System.Buffers;
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobby;
 using SuperMarioOdysseyOnline.Server.Models;
-using SuperMarioOdysseyOnline.Server.Players;
 
-namespace SuperMarioOdysseyOnline.Server.Packets.Data;
+namespace SuperMarioOdysseyOnline.Server.Packets;
 
-public record PlayerStageData(Stage Stage) : IPacketData
+public record PlayerStagePacket(Guid Id, PlayerStageData Data) : IPacket<PlayerStageData>, IPacket
 {
     public PacketType Type => PacketType.PlayerStageData;
 
+    public PlayerStagePacket(Guid id, ReadOnlySequence<byte> data)
+        : this(id, new PlayerStageData(data))
+    {
+    }
+
+    IPacketData IPacket<IPacketData>.Data => Data;
+}
+
+public record PlayerStageData(Stage Stage) : IPacketData
+{
     public PlayerStageData(ReadOnlySequence<byte> data)
         : this(
             new Stage(
