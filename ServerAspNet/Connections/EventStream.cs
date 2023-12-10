@@ -32,7 +32,7 @@ internal class EventStream
 
     private async Task CreateTask()
     {
-        var updateStrategy = await _updateStrategyFactory.CreateAsync(_connection, _cancellationTokenSource.Token);
+        var updateStrategy = await _updateStrategyFactory.CreateAsync(_lobby, _player, _connection, _cancellationTokenSource.Token);
 
         await Task.WhenAny(
             ListenForIncomingPacketsAsync(_cancellationTokenSource.Token),

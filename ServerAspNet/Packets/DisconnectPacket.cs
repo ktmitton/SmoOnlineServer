@@ -16,5 +16,7 @@ public record DisconnectPacket(Guid Id, DisconnectData Data) : IPacket<Disconnec
 
 public record DisconnectData(ReadOnlySequence<byte> Data) : IPacketData
 {
-    public ReadOnlySequence<byte> AsSequence() => Data;
+    public short Size => (short)Data.Length;
+
+    public byte[] ToByteArray() => Data.ToArray();
 }

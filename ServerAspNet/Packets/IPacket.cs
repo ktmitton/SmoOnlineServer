@@ -5,7 +5,26 @@ namespace SuperMarioOdysseyOnline.Server.Packets;
 
 public interface IPacket : IPacket<IPacketData>
 {
-    virtual ReadOnlySpan<byte> AsSpan() => throw new NotImplementedException("");
+    virtual byte[] ToByteArray()
+    {
+        var id = Id.ToByteArray();
+        var type = BitConverter.GetBytes((short)Type);
+        var size = BitConverter.GetBytes(Data.Size);
+        var data = Data.ToByteArray();
+
+        return [
+            ..id,
+            ..type,
+            ..size,
+            ..data
+        ];
+    }
+        // =>
+        // [
+        //     ..Id.ToByteArray(),
+        //     ..BitConverter.GetBytes(Data.Size),
+        //     ..Data.ToByteArray()
+        // ];
 
     static virtual IPacket Create(ReadOnlySequence<byte> header, ReadOnlySequence<byte> data)
     {
@@ -41,7 +60,9 @@ public interface IPacket<T> where T : IPacketData
 
 public interface IPacketData
 {
-    ReadOnlySequence<byte> AsSequence();
+    byte[] ToByteArray();
+
+    short Size { get; }
 }
 
 public enum PacketType : short

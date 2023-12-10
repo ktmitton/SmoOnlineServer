@@ -17,7 +17,7 @@ public class LobbyConfiguration
     public List<LobbyDetails> Lobbies { get; set; } = [];
 }
 
-public record LobbyDetails(string Name, Uri Url)
+public record LobbyDetails(string Name, Uri Url, string Type)
 {
     public Guid Id { get; } = Guid.NewGuid();
 

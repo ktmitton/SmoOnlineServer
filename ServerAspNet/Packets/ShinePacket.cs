@@ -22,6 +22,8 @@ public record ShineData(int ShineId) : IPacketData
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new(BitConverter.GetBytes(ShineId));
+    public short Size => sizeof(int);
+
+    public byte[] ToByteArray()
+        => BitConverter.GetBytes(ShineId);
 }

@@ -15,12 +15,17 @@ public record CostumePacket(Guid Id, CostumeData Data) : IPacket<CostumeData>, I
     {
     }
 
+    public CostumePacket(IPlayer player)
+        : this(Guid.NewGuid(), new CostumeData(player))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 
 public record CostumeData(Costume MariosCostume, Costume CappysCostume) : IPacketData
 {
-    private const int NameSize = 32;
+    private const byte NameSize = 32;
 
     public CostumeData(ReadOnlySequence<byte> data)
         : this(
@@ -35,9 +40,11 @@ public record CostumeData(Costume MariosCostume, Costume CappysCostume) : IPacke
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => NameSize * 2;
+
+    public byte[] ToByteArray()
+        => [
             ..Encoding.UTF8.GetBytes(MariosCostume.Name.PadRight(NameSize, '\0')),
             ..Encoding.UTF8.GetBytes(CappysCostume.Name.PadRight(NameSize, '\0')),
-        ]);
+        ];
 }

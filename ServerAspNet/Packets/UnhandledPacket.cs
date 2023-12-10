@@ -16,5 +16,7 @@ public record UnhandledPacket(Guid Id, UnhandledData Data) : IPacket<UnhandledDa
 
 public record UnhandledData(ReadOnlySequence<byte> Data) : IPacketData
 {
-    public ReadOnlySequence<byte> AsSequence() => Data;
+    public short Size => (short)Data.Length;
+
+    public byte[] ToByteArray() => Data.ToArray();
 }

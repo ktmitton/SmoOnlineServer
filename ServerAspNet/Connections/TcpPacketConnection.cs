@@ -65,7 +65,11 @@ internal class TcpPacketConnection(ConnectionContext connectionContext) : IPacke
     }
 
     public void WriteMessage(IPacket message, IBufferWriter<byte> output)
-        => output.Write(message.AsSpan());
+    {
+        var data = message.ToByteArray();
+
+        output.Write(data);
+    }
 
     private CancellationToken CreateLinkedToken(CancellationToken cancellationToken)
         => CancellationTokenSource.CreateLinkedTokenSource(_connectionCancellationToken, cancellationToken).Token;

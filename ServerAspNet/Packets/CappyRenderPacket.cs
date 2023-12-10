@@ -15,6 +15,11 @@ public record CappyRenderPacket(Guid Id, CappyRenderData Data) : IPacket<CappyRe
     {
     }
 
+    public CappyRenderPacket(IPlayer player)
+        : this(Guid.NewGuid(), new CappyRenderData(player))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 
@@ -34,8 +39,10 @@ public record CappyRenderData(Location Location, Animation Animation, bool IsThr
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => (short)(sizeof(float) * 7 + sizeof(bool) + 3 + Animation.Name.Length);
+
+    public byte[] ToByteArray()
+        => [
             ..BitConverter.GetBytes(Location.Position.X),
             ..BitConverter.GetBytes(Location.Position.Y),
             ..BitConverter.GetBytes(Location.Position.Z),
@@ -49,5 +56,5 @@ public record CappyRenderData(Location Location, Animation Animation, bool IsThr
             0, 0, 0, // Buffer because the old packet has a size of 4 for the boolean?
 
             ..Encoding.UTF8.GetBytes(Animation.Name)
-        ]);
+        ];
 }

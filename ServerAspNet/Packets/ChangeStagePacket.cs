@@ -18,9 +18,9 @@ public record ChangeStagePacket(Guid Id, ChangeStageData Data) : IPacket<ChangeS
 
 public record ChangeStageData(string Stage, string Id, sbyte Scenario, byte SubScenarioType) : IPacketData
 {
-    private const int IdSize = 16;
+    private const byte IdSize = 16;
 
-    private const int StageSize = 48;
+    private const byte StageSize = 48;
 
     public ChangeStageData(ReadOnlySequence<byte> data)
         : this(
@@ -32,11 +32,13 @@ public record ChangeStageData(string Stage, string Id, sbyte Scenario, byte SubS
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => StageSize * 2 + sizeof(sbyte) + sizeof(byte);
+
+    public byte[] ToByteArray()
+        => [
             ..Encoding.UTF8.GetBytes(Stage.PadRight(StageSize, '\0')),
             ..Encoding.UTF8.GetBytes(Id.PadRight(IdSize, '\0')),
             (byte)Scenario,
             SubScenarioType
-        ]);
+        ];
 }

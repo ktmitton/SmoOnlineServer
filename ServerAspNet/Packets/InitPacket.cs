@@ -22,6 +22,8 @@ public record InitData(ushort MaxPlayers) : IPacketData
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new(BitConverter.GetBytes(MaxPlayers));
+    public short Size => sizeof(short);
+
+    public byte[] ToByteArray()
+        => BitConverter.GetBytes(MaxPlayers);
 }

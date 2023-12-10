@@ -15,6 +15,11 @@ public record PlayerStagePacket(Guid Id, PlayerStageData Data) : IPacket<PlayerS
     {
     }
 
+    public PlayerStagePacket(IPlayer player)
+        : this(Guid.NewGuid(), new PlayerStageData(player))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 
@@ -36,10 +41,12 @@ public record PlayerStageData(Stage Stage) : IPacketData
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => (short)(2 + Stage.Name.Length);
+
+    public byte[] ToByteArray()
+        => [
             ..BitConverter.GetBytes(Stage.Is2d),
             Stage.Id,
             ..Encoding.UTF8.GetBytes(Stage.Name)
-        ]);
+        ];
 }

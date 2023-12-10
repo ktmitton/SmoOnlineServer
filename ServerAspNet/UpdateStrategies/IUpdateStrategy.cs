@@ -1,11 +1,13 @@
-using SuperMarioOdysseyOnline.Server.Connections;
+using System.Numerics;
+using SuperMarioOdysseyOnline.Server.Lobby;
 using SuperMarioOdysseyOnline.Server.Packets;
 
 namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
-public interface IUpdateStrategyFactory
+public static class DefaultUpdateStrategyServiceExtensions
 {
-    Task<IUpdateStrategy> CreateAsync(IPacketConnection packetConnection, CancellationToken cancellationToken);
+    public static IServiceCollection AddDefaultUpdateStrategyFactory(this IServiceCollection serviceCollection)
+        => serviceCollection.AddTransient<IUpdateStrategyFactory, DefaultUpdateStrategyFactory>();
 }
 
 public interface IUpdateStrategy
@@ -19,68 +21,227 @@ public interface IUpdateStrategy
     /// </remarks>
     TimeSpan MinimumUpdatePeriod { get; }
 
-    /// <summary>
-    /// The rating of the connection for this update strategy, where higher numbers represent better matches of a connection to the update strategy.
-    /// </summary>
-    float ConnectionRating { get; }
-
     Task RefreshConnectionRatingAsync(CancellationToken cancellationToken);
 
     IEnumerable<IPacket> GetNextUpdateCollection();
+}
 
-    // bool ShouldSendMarioLocationUpdate(IPlayer remotePlayer, DateTime lastUpdateTimestamp);
+internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrategy
+{
+    private readonly ILobby _lobby = lobby;
 
-    // bool ShouldSendCosutmeUpdate(IPlayer remotePlayer, string lastMarioCostumeName, string lastCappyCostumeName, DateTime lastUpdateTimestamp);
+    private readonly IPlayer _connectedPlayer = player;
 
-    // bool ShouldSendCappyLocationUpdate(IPlayer remotePlayer, bool lastIsThrown, DateTime lastUpdateTimestamp);
+    public TimeSpan MinimumUpdatePeriod { get; } = TimeSpan.FromMilliseconds(10);
 
-    // bool ShouldSendCaptureUpdate(IPlayer remotePlayer, string lastCaptureModelName, DateTime lastUpdateTimestamp);
+    /// <summary>
+    /// The frequency with which location updates should be sent for players on different stages, regardless of last update values.
+    /// </summary>
+    private static readonly TimeSpan DifferentStageLocationUpdateFrequency = TimeSpan.FromSeconds(1);
 
-    // bool ShouldSendStageUpdate(IPlayer remotePlayer, byte lastStageId, DateTime lastUpdateTimestamp);
+    /// <summary>
+    /// The frequency with which location updates should be sent for distant players on the same stage, regardless of last update values.
+    /// </summary>
+    private static readonly TimeSpan DistantProximityLocationUpdateFrequency = TimeSpan.FromMilliseconds(100);
 
-    // private async Task SendRemotePlayerUpdatesAsync(IPlayer remotePlayer, CancellationToken cancellationToken)
-    // {
-    //     var oldLog = _playerUpdateLogs.GetOrAdd(remotePlayer, (x) => {
-    //         return new PlayerUpdateLog(
-    //             DateTime.MinValue,
-    //             (DateTime.MinValue, string.Empty, string.Empty),
-    //             (DateTime.MinValue, default),
-    //             (DateTime.MinValue, string.Empty),
-    //             (DateTime.MinValue, default)
-    //         );
-    //     });
+    /// <summary>
+    /// The frequency with which cosmetic updates should be sent, regardless of last update values.
+    /// </summary>
+    private static readonly TimeSpan CosmeticFrequency = TimeSpan.FromSeconds(30);
 
-    //     if (_updateStrategy.ShouldSendMarioLocationUpdate(_connectedPlayer, remotePlayer, oldLog.LastLocationUpdateTimestamp))
-    //     {
-    //         await stream.WritePacketAsync(new Packet(new MarioLocationData(remotePlayer)),cancellationToken);
-    //     }
+    /// <summary>
+    /// The frequency with which stage updates should be sent, regardless of last update values.
+    /// </summary>
+    private static readonly TimeSpan StageUpdateFrequency = TimeSpan.FromSeconds(10);
 
-    //     if (_updateStrategy.ShouldSendCosutmeUpdate(remotePlayer, oldLog.LastCostumeUpdate.MarioCostumeName, oldLog.LastCostumeUpdate.CappyCostumeName, oldLog.LastCostumeUpdate.Timestamp))
-    //     {
-    //         await stream.WritePacketAsync(new Packet(new CostumeData(remotePlayer)), cancellationToken);
-    //     }
+    /// <summary>
+    /// The maximum distance between players on the same stage where location details should be sent with every update.
+    /// </summary>
+    /// <remarks>
+    /// If two players on the same stage are further apart, location details will update based on <see cref="HighPriorityFrequency"/>.
+    /// If two players are on different stages, location details will update based on <see cref="LowPriorityFrequency"/>.
+    /// </remarks>
+    private const float MaximumImmediateLocationUpdateDistance = 10;
 
-    //     if (_updateStrategy.ShouldSendCappyLocationUpdate(remotePlayer, oldLog.LastCappyUpdate.IsThrown, oldLog.LastCappyUpdate.Timestamp))
-    //     {
-    //         await stream.WritePacketAsync(new Packet(new CappyLocationData(remotePlayer)), cancellationToken);
-    //     }
+    private Dictionary<Guid, PlayerUpdateLog> _playerUpdateLogs = [];
 
-    //     if (_updateStrategy.ShouldSendCaptureUpdate(remotePlayer, oldLog.LastCaptureUpdate.ModelName, oldLog.LastCaptureUpdate.Timestamp))
-    //     {
-    //         await stream.WritePacketAsync(new Packet(new CaptureData(remotePlayer)), cancellationToken);
-    //     }
+    public Task RefreshConnectionRatingAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
 
-    //     if (_updateStrategy.ShouldSendStageUpdate(remotePlayer, oldLog.LastStageUpdate.Id, oldLog.LastStageUpdate.Timestamp))
-    //     {
-    //         await stream.WritePacketAsync(new Packet(new MarioStageData(remotePlayer)), cancellationToken);
-    //     }
-    // }
+    public IEnumerable<IPacket> GetNextUpdateCollection()
+    {
+        var updates = _lobby.Players.Where(x => x.Id != _connectedPlayer.Id).SelectMany(GetRemotePlayerUpdates);
 
-    // private record PlayerUpdateLog(
-    //     DateTime LastLocationUpdateTimestamp,
-    //     (DateTime Timestamp, string MarioCostumeName, string CappyCostumeName) LastCostumeUpdate,
-    //     (DateTime Timestamp, bool IsThrown) LastCappyUpdate,
-    //     (DateTime Timestamp, string ModelName) LastCaptureUpdate,
-    //     (DateTime Timestamp, byte Id) LastStageUpdate
-    // );
+        return updates;
+    }
+
+    public List<IPacket> GetRemotePlayerUpdates(IPlayer remotePlayer)
+    {
+        var updates = new List<IPacket>();
+
+        _playerUpdateLogs.TryGetValue(remotePlayer.Id, out var logs);
+
+        if (logs is null)
+        {
+            updates.Add(new ConnectPacket(remotePlayer));
+
+            logs = PlayerUpdateLog.CreateDefault();
+        }
+
+        if (ShouldSendRemotePlayerLocationUpdate(remotePlayer, logs.Mario))
+        {
+            updates.Add(new MarioRenderPacket(remotePlayer));
+            logs = logs with { Mario = new PlayerMarioLog() };
+        }
+
+        if (ShouldSendCosutmeUpdate(remotePlayer, logs.Costume))
+        {
+            updates.Add(new CostumePacket(remotePlayer));
+            logs = logs with { Costume = new PlayerCostumeLog(remotePlayer) };
+        }
+
+        if (ShouldSendCappyLocationUpdate(remotePlayer, logs.Cappy))
+        {
+            updates.Add(new CappyRenderPacket(remotePlayer));
+            logs = logs with { Cappy = new PlayerCappyLog(remotePlayer) };
+        }
+
+        if (ShouldSendCaptureUpdate(remotePlayer, logs.Capture))
+        {
+            updates.Add(new CapturePacket(remotePlayer));
+            logs = logs with { Capture = new PlayerCaptureLog(remotePlayer) };
+        }
+
+        if (ShouldSendStageUpdate(remotePlayer, logs.Stage))
+        {
+            updates.Add(new PlayerStagePacket(remotePlayer));
+            logs = logs with { Stage = new PlayerStageLog(remotePlayer) };
+        }
+
+        _playerUpdateLogs[remotePlayer.Id] = logs;
+
+        return updates;
+    }
+
+    private bool ShouldSendRemotePlayerLocationUpdate(IPlayer remotePlayer, PlayerMarioLog lastLog)
+    {
+        var arePlayersOnDifferentStages = _connectedPlayer.Stage.Id != remotePlayer.Stage.Id;
+
+        if (arePlayersOnDifferentStages)
+        {
+            return lastLog.Timestamp < DateTime.Now.Subtract(DifferentStageLocationUpdateFrequency);
+        }
+
+        var distance = Math.Abs(Vector3.Distance(_connectedPlayer.Mario.Location.Position, remotePlayer.Mario.Location.Position));
+
+        var arePlayersFarApart = distance <= MaximumImmediateLocationUpdateDistance;
+
+        if (arePlayersFarApart)
+        {
+            return lastLog.Timestamp < DateTime.Now.Subtract(DistantProximityLocationUpdateFrequency);
+        }
+
+        return true;
+    }
+
+    private static bool ShouldSendCosutmeUpdate(IPlayer remotePlayer, PlayerCostumeLog lastLog)
+    {
+        var hasMarioCostumeChanged = !remotePlayer.Mario.Costume.Name.Equals(lastLog.MarioCostumeName);
+        var hasCappyCostumeChanged = !remotePlayer.Cappy.Costume.Name.Equals(lastLog.CappyCostumeName);
+
+        if (hasMarioCostumeChanged || hasCappyCostumeChanged)
+        {
+            return true;
+        }
+
+        return lastLog.Timestamp < DateTime.Now.Subtract(CosmeticFrequency);
+    }
+
+    private static bool ShouldSendCappyLocationUpdate(IPlayer remotePlayer, PlayerCappyLog lastLog)
+    {
+        return remotePlayer.Cappy.IsThrown || lastLog.IsThrown;
+    }
+
+    private static bool ShouldSendCaptureUpdate(IPlayer remotePlayer, PlayerCaptureLog lastLog)
+    {
+        if (remotePlayer.Mario.CapturedEntity is null)
+        {
+            return lastLog.ModelName is null;
+        }
+
+        if (remotePlayer.Mario.CapturedEntity.Name.Equals(lastLog.ModelName))
+        {
+            return lastLog.Timestamp < DateTime.Now.Subtract(CosmeticFrequency);
+        }
+
+        return true;
+    }
+
+    private static bool ShouldSendStageUpdate(IPlayer remotePlayer, PlayerStageLog lastLog)
+    {
+        if (remotePlayer.Stage.Id == lastLog.Id)
+        {
+            return lastLog.Timestamp < DateTime.Now.Subtract(StageUpdateFrequency);
+        }
+
+        return true;
+    }
+
+    private record PlayerUpdateLog(
+        PlayerMarioLog Mario,
+        PlayerCostumeLog Costume,
+        PlayerCappyLog Cappy,
+        PlayerCaptureLog Capture,
+        PlayerStageLog Stage
+    )
+    {
+        public static PlayerUpdateLog CreateDefault()
+            => new(
+                new PlayerMarioLog(DateTime.MinValue),
+                new PlayerCostumeLog(DateTime.MinValue, string.Empty, string.Empty),
+                new PlayerCappyLog(DateTime.MinValue, default),
+                new PlayerCaptureLog(DateTime.MinValue, string.Empty),
+                new PlayerStageLog(DateTime.MinValue, default)
+            );
+    }
+
+    private record PlayerMarioLog(DateTime Timestamp)
+    {
+        public PlayerMarioLog()
+            : this(DateTime.Now)
+        {
+        }
+    }
+
+    private record PlayerCostumeLog(DateTime Timestamp, string MarioCostumeName, string CappyCostumeName)
+    {
+        public PlayerCostumeLog(IPlayer player)
+            : this(DateTime.Now, player.Mario.Costume.Name, player.Cappy.Costume.Name)
+        {
+        }
+    }
+
+    private record PlayerCappyLog(DateTime Timestamp, bool IsThrown)
+    {
+        public PlayerCappyLog(IPlayer player)
+            : this(DateTime.Now, player.Cappy.IsThrown)
+        {
+        }
+    }
+
+    private record PlayerCaptureLog(DateTime Timestamp, string? ModelName)
+    {
+        public PlayerCaptureLog(IPlayer player)
+            : this(DateTime.Now, player.Mario.CapturedEntity?.Name)
+        {
+        }
+    }
+
+    private record PlayerStageLog(DateTime Timestamp, byte Id)
+    {
+        public PlayerStageLog(IPlayer player)
+            : this(DateTime.Now, player.Stage.Id)
+        {
+        }
+    }
 }

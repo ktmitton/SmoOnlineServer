@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobby;
 
 namespace SuperMarioOdysseyOnline.Server.Packets;
 
@@ -10,6 +11,11 @@ public record ConnectPacket(Guid Id, ConnectData Data) : IPacket<ConnectData>, I
 
     public ConnectPacket(Guid id, ReadOnlySequence<byte> data)
         : this(id, new ConnectData(data))
+    {
+    }
+
+    public ConnectPacket(IPlayer player)
+        : this(player.Id, new ConnectData(ConnectionType.FirstConnection, default, player.Name))
     {
     }
 
@@ -23,12 +29,14 @@ public record ConnectData(ConnectionType ConnectionType, ushort MaxPlayers, stri
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => (short)(sizeof(int) + sizeof(ushort) + ClientName.Length);
+
+    public byte[] ToByteArray()
+        => [
             ..BitConverter.GetBytes((int)ConnectionType),
             ..BitConverter.GetBytes(MaxPlayers),
             ..Encoding.UTF8.GetBytes(ClientName)
-        ]);
+        ];
 }
 
 public enum ConnectionType {

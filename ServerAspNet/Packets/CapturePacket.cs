@@ -16,6 +16,11 @@ public record CapturePacket(Guid Id, CaptureData Data) : IPacket<CaptureData>, I
         : this(id, new CaptureData(data))
     {
     }
+
+    public CapturePacket(IPlayer player)
+        : this(Guid.NewGuid(), new CaptureData(player))
+    {
+    }
 }
 
 public record CaptureData(CapturedEntity CapturedEntity) : IPacketData
@@ -30,8 +35,8 @@ public record CaptureData(CapturedEntity CapturedEntity) : IPacketData
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
-            ..Encoding.UTF8.GetBytes(CapturedEntity.Name)
-        ]);
+    public short Size => (short)CapturedEntity.Name.Length;
+
+    public byte[] ToByteArray()
+        => Encoding.UTF8.GetBytes(CapturedEntity.Name);
 }

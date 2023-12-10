@@ -14,6 +14,11 @@ public record MarioRenderPacket(Guid Id, MarioRenderData Data) : IPacket<MarioRe
     {
     }
 
+    public MarioRenderPacket(IPlayer player)
+        : this(Guid.NewGuid(), new MarioRenderData(player))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 
@@ -44,8 +49,14 @@ public record MarioRenderData(Location Location, Animation Animation) : IPacketD
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => (short)(
+        (sizeof(float) * 7) +
+        (sizeof(short) * 2) +
+        (sizeof(float) * (Animation.CurrentKeyFrame?.AnimationBlendWeights.Length ?? 0))
+    );
+
+    public byte[] ToByteArray()
+        => [
             ..BitConverter.GetBytes(Location.Position.X),
             ..BitConverter.GetBytes(Location.Position.Y),
             ..BitConverter.GetBytes(Location.Position.Z),
@@ -59,5 +70,5 @@ public record MarioRenderData(Location Location, Animation Animation) : IPacketD
 
             ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.Act ?? default),
             ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.SubAct ?? default)
-        ]);
+        ];
 }

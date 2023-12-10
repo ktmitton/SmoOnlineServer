@@ -27,13 +27,15 @@ public record TagData(TagFlags UpdateType, bool IsIt, byte Seconds, ushort Minut
     {
     }
 
-    public ReadOnlySequence<byte> AsSequence()
-        => new([
+    public short Size => sizeof(TagFlags) + sizeof(bool) + sizeof(byte) + sizeof(ushort);
+
+    public byte[] ToByteArray()
+        => [
             (byte)UpdateType,
             ..BitConverter.GetBytes(IsIt),
             Seconds,
             ..BitConverter.GetBytes(Minutes)
-        ]);
+        ];
 }
 
 [Flags]
