@@ -12,6 +12,10 @@ public record ShinePacket(Guid Id, ShineData Data) : IPacket<ShineData>, IPacket
     {
     }
 
+    public ShinePacket(int shineId) : this(Guid.NewGuid(), new ShineData(shineId))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 

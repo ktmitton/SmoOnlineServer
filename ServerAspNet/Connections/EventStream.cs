@@ -46,7 +46,7 @@ internal class EventStream
         {
             var packet = await _connection.ReceiveNextPacketAsync(cancellationToken);
             _player.HandleReceivedPacket(packet);
-            _lobby.HandleReceivedPacket(packet);
+            _lobby.HandleReceivedPacket(_player, packet);
         }
     }
 

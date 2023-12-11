@@ -19,12 +19,6 @@ public interface IPacket : IPacket<IPacketData>
             ..data
         ];
     }
-        // =>
-        // [
-        //     ..Id.ToByteArray(),
-        //     ..BitConverter.GetBytes(Data.Size),
-        //     ..Data.ToByteArray()
-        // ];
 
     static virtual IPacket Create(ReadOnlySequence<byte> header, ReadOnlySequence<byte> data)
     {

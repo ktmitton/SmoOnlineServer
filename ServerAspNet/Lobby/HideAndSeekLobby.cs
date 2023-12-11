@@ -6,7 +6,11 @@ namespace SuperMarioOdysseyOnline.Server.Lobby;
 [Lobby("HideAndSeek")]
 internal class HideAndSeekLobby(Guid id, string name) : ILobby
 {
-    private readonly ConcurrentDictionary<Guid, IPlayer> _players = new();
+    private readonly ConcurrentDictionary<Guid, IPlayer> _players = [];
+
+    private readonly ConcurrentDictionary<Guid, bool> _seekerStatus = [];
+
+    private readonly ConcurrentDictionary<Guid, TimeSpan> _hiddenTimespans = [];
 
     public Guid Id => id;
 
@@ -21,7 +25,22 @@ internal class HideAndSeekLobby(Guid id, string name) : ILobby
 
     public IPlayer GetOrAddPlayer(Guid id) => _players.GetOrAdd(id, (x) => new Player(x));
 
-    public void HandleReceivedPacket(IPacket packet)
+    public void HandleReceivedPacket(IPlayer player, IPacket packet)
     {
+        switch (packet)
+        {
+            case TagPacket tagPacket:
+                if ((tagPacket.Data.UpdateType & TagFlags.State) != 0)
+                {
+                    _seekerStatus[player.Id] = tagPacket.Data.IsIt;
+                }
+
+                if ((tagPacket.Data.UpdateType & TagFlags.Time) != 0)
+                {
+                    _hiddenTimespans[player.Id] = tagPacket.Data.TimeSpan;
+                }
+
+                break;
+        }
     }
 }

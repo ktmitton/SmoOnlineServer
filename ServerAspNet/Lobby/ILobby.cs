@@ -12,10 +12,10 @@ public interface ILobby
 
     IPlayer GetOrAddPlayer(Guid id);
 
-    virtual IPlayer GetOrAddPlayer(ConnectPacket packet)
+    IPlayer GetOrAddPlayer(ConnectPacket packet)
         => GetOrAddPlayer(packet.Id, packet.Data.ClientName);
 
-    virtual IPlayer GetOrAddPlayer(Guid id, string name)
+    IPlayer GetOrAddPlayer(Guid id, string name)
     {
         var player = GetOrAddPlayer(id);
 
@@ -24,9 +24,11 @@ public interface ILobby
         return player;
     }
 
-    virtual IPlayer GetOrAddPlayer(IPlayer player) => GetOrAddPlayer(player.Id, player.Name);
+    IPlayer GetOrAddPlayer(IPlayer player) => GetOrAddPlayer(player.Id, player.Name);
 
-    virtual IEnumerable<IPlayer> GetOpponents(IPlayer player) => Players.Where(x => x.Id != player.Id);
+    IEnumerable<IPlayer> GetOpponents(IPlayer player) => Players.Where(x => x.Id != player.Id);
 
-    void HandleReceivedPacket(IPacket packet);
+    void HandleReceivedPacket(IPlayer player, IPacket packet);
+
+    IEnumerable<IPacket> GetNextUpdateCollection(IPlayer player) => Enumerable.Empty<IPacket>();
 }

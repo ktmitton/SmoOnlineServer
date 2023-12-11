@@ -6,7 +6,13 @@ namespace SuperMarioOdysseyOnline.Server.Lobby;
 [Lobby("Coop")]
 internal class CoopLobby(Guid id, string name) : ILobby
 {
-    private readonly ConcurrentDictionary<Guid, IPlayer> _players = new();
+    private readonly ConcurrentDictionary<Guid, IPlayer> _players = [];
+
+    private readonly ConcurrentQueue<int> _shineSyncQueue = [];
+
+    private readonly ConcurrentDictionary<int, bool> _shines = [];
+
+    private readonly ConcurrentDictionary<Guid, int?> _playerSyncData = [];
 
     public Guid Id => id;
 
@@ -21,7 +27,49 @@ internal class CoopLobby(Guid id, string name) : ILobby
 
     public IPlayer GetOrAddPlayer(Guid id) => _players.GetOrAdd(id, (x) => new Player(x));
 
-    public void HandleReceivedPacket(IPacket packet)
+    public void HandleReceivedPacket(IPlayer player, IPacket packet)
     {
+        switch (packet)
+        {
+            case PlayerStagePacket playerStagePacket:
+                switch (playerStagePacket.Data.Stage.Name)
+                {
+                    case "CapWorldHomeStage" when playerStagePacket.Data.Stage.Id == 0:
+                        _playerSyncData[player.Id] = default;
+
+                        break;
+                    case "WaterfallWorldHomeStage" when !_playerSyncData[player.Id].HasValue:
+                        _playerSyncData.TryAdd(player.Id, 0);
+
+                        break;
+                }
+
+                break;
+            case ShinePacket shinePacket:
+                if (_playerSyncData[player.Id].HasValue && _shines.TryAdd(shinePacket.Data.ShineId, true))
+                {
+                    _shineSyncQueue.Enqueue(shinePacket.Data.ShineId);
+                }
+
+                break;
+        }
+    }
+
+    public IEnumerable<IPacket> GetNextUpdateCollection(IPlayer player)
+    {
+        var updates = new List<IPacket>();
+
+        if (
+            _playerSyncData.TryGetValue(player.Id, out var lastSyncIndex) &&
+            lastSyncIndex.HasValue &&
+            (lastSyncIndex < _shineSyncQueue.Count)
+        )
+        {
+            updates.AddRange(_shineSyncQueue.Skip(lastSyncIndex.Value).Select(x => new ShinePacket(x)));
+
+            _playerSyncData.TryUpdate(player.Id, lastSyncIndex.Value + updates.Count, lastSyncIndex.Value);
+        }
+
+        return updates;
     }
 }

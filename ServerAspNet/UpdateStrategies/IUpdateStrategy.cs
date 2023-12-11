@@ -63,16 +63,17 @@ internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStra
     /// </remarks>
     private const float MaximumImmediateLocationUpdateDistance = 10;
 
-    private Dictionary<Guid, PlayerUpdateLog> _playerUpdateLogs = [];
+    private readonly Dictionary<Guid, PlayerUpdateLog> _playerUpdateLogs = [];
 
     public Task RefreshConnectionRatingAsync(CancellationToken cancellationToken)
         => Task.CompletedTask;
 
     public IEnumerable<IPacket> GetNextUpdateCollection()
     {
-        var updates = _lobby.Players.Where(x => x.Id != _connectedPlayer.Id).SelectMany(GetRemotePlayerUpdates);
+        var playerUpdates = _lobby.Players.Where(x => x.Id != _connectedPlayer.Id).SelectMany(GetRemotePlayerUpdates);
+        var lobbyUpdates = _lobby.GetNextUpdateCollection(_connectedPlayer);
 
-        return updates;
+        return [ ..playerUpdates, ..lobbyUpdates ];
     }
 
     public List<IPacket> GetRemotePlayerUpdates(IPlayer remotePlayer)

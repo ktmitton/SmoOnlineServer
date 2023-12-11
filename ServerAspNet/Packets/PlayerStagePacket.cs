@@ -23,11 +23,11 @@ public record PlayerStagePacket(Guid Id, PlayerStageData Data) : IPacket<PlayerS
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 
-public record PlayerStageData(Stage Stage) : IPacketData
+public record PlayerStageData(StageDetails Stage) : IPacketData
 {
     public PlayerStageData(ReadOnlySequence<byte> data)
         : this(
-            new Stage(
+            new StageDetails(
                 data.ReadByte(1),
                 data.ReadString(2),
                 data.ReadBoolean(0)

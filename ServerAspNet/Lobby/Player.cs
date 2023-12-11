@@ -17,7 +17,7 @@ public interface IPlayer
 
     Cappy Cappy { get; }
 
-    Stage Stage { get; }
+    StageDetails Stage { get; }
 
     void HandleReceivedPacket(IPacket packet);
 }
@@ -36,53 +36,56 @@ internal class Player(Guid id) : IPlayer
 
     public Cappy Cappy { get; private set; } = new Cappy();
 
-    public Stage Stage { get; private set; } = new Stage();
+    public StageDetails Stage { get; private set; } = new StageDetails();
 
     public void HandleReceivedPacket(IPacket packet)
     {
-        if (packet.Data is ConnectData connectData)
+        switch (packet)
         {
-            Name = connectData.ClientName;
-        }
-        else if (packet.Data is CappyRenderData capData)
-        {
-            Cappy = Cappy with
-            {
-                Location = capData.Location,
-                Animation = capData.Animation,
-                IsThrown = capData.IsThrown
-            };
-        }
-        else if (packet.Data is CaptureData captureData)
-        {
-            Mario = Mario with
-            {
-                CapturedEntity = captureData.CapturedEntity
-            };
-        }
-        else if (packet.Data is CostumeData costumeData)
-        {
-            Mario = Mario with
-            {
-                Costume = costumeData.MariosCostume
-            };
+            case ConnectPacket connectPacket:
+                Name = connectPacket.Data.ClientName;
 
-            Cappy = Cappy with
-            {
-                Costume = costumeData.CappysCostume
-            };
-        }
-        else if (packet.Data is MarioRenderData playerData)
-        {
-            Mario = Mario with
-            {
-                Location = playerData.Location,
-                Animation = playerData.Animation
-            };
-        }
-        else if (packet.Data is PlayerStageData gameData)
-        {
-            Stage = gameData.Stage;
+                break;
+            case CappyRenderPacket cappyRenderPacket:
+                Cappy = Cappy with
+                {
+                    Location = cappyRenderPacket.Data.Location,
+                    Animation = cappyRenderPacket.Data.Animation,
+                    IsThrown = cappyRenderPacket.Data.IsThrown
+                };
+
+                break;
+            case CapturePacket capturePacket:
+                Mario = Mario with
+                {
+                    CapturedEntity = capturePacket.Data.CapturedEntity
+                };
+
+                break;
+            case CostumePacket costumePacket:
+                Mario = Mario with
+                {
+                    Costume = costumePacket.Data.MariosCostume
+                };
+
+                Cappy = Cappy with
+                {
+                    Costume = costumePacket.Data.CappysCostume
+                };
+
+                break;
+            case MarioRenderPacket marioRenderPacket:
+                Mario = Mario with
+                {
+                    Location = marioRenderPacket.Data.Location,
+                    Animation = marioRenderPacket.Data.Animation
+                };
+
+                break;
+            case PlayerStagePacket playerStagePacket:
+                Stage = playerStagePacket.Data.Stage;
+
+                break;
         }
     }
 }

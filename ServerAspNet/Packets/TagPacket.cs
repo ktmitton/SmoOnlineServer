@@ -29,6 +29,8 @@ public record TagData(TagFlags UpdateType, bool IsIt, byte Seconds, ushort Minut
 
     public short Size => sizeof(TagFlags) + sizeof(bool) + sizeof(byte) + sizeof(ushort);
 
+    public TimeSpan TimeSpan => TimeSpan.FromMinutes(Minutes).Add(TimeSpan.FromSeconds(Seconds));
+
     public byte[] ToByteArray()
         => [
             (byte)UpdateType,
