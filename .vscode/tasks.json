@@ -2,38 +2,38 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build ServerAspNet",
+            "label": "build SuperMarioOdysseyOnline.Server",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ServerAspNet/ServerAspNet.csproj",
+                "${workspaceFolder}/SuperMarioOdysseyOnline.Server/SuperMarioOdysseyOnline.Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish ServerAspNet",
+            "label": "publish SuperMarioOdysseyOnline.Server",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/ServerAspNet/ServerAspNet.csproj",
+                "${workspaceFolder}/SuperMarioOdysseyOnline.Server/SuperMarioOdysseyOnline.Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch ServerAspNet",
+            "label": "watch SuperMarioOdysseyOnline.Server",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/ServerAspNet/ServerAspNet.csproj",
+                "${workspaceFolder}/SuperMarioOdysseyOnline.Server/SuperMarioOdysseyOnline.Server.csproj",
             ],
             "problemMatcher": "$msCompile"
         }
