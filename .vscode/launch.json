@@ -11,11 +11,11 @@
             "name": "Server Launch",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build SuperMarioOdysseyOnline.Server",
+            "preLaunchTask": "build SuperMarioOdysseyOnline.Server.Basic",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/SuperMarioOdysseyOnline.Server/bin/Debug/net8.0/SuperMarioOdysseyOnline.Server.dll",
+            "program": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Basic/bin/Debug/net8.0/SuperMarioOdysseyOnline.Server.Basic.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/SuperMarioOdysseyOnline.Server",
+            "cwd": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Basic",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
