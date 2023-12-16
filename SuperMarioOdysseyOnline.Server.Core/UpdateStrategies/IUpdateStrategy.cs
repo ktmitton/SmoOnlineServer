@@ -20,6 +20,7 @@ public interface IUpdateStrategy
     IEnumerable<IPacket> GetNextUpdateCollection();
 }
 
+
 internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrategy
 {
     private readonly ILobby _lobby = lobby;
@@ -56,6 +57,13 @@ internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStra
     /// If two players are on different stages, location details will update based on <see cref="LowPriorityFrequency"/>.
     /// </remarks>
     private const float MaximumImmediateLocationUpdateDistance = 10;
+
+    private static readonly DistanceUpdateFrequency[] DistanceCutoffs =
+    [
+        new DistanceUpdateFrequency(54000f, TimeSpan.FromSeconds(1)),
+        new DistanceUpdateFrequency(36000f, TimeSpan.FromMilliseconds(500)),
+        new DistanceUpdateFrequency(18000f, TimeSpan.FromMilliseconds(100))
+    ];
 
     private readonly Dictionary<Guid, PlayerUpdateLog> _playerUpdateLogs = [];
 
@@ -129,11 +137,12 @@ internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStra
 
         var distance = Math.Abs(Vector3.Distance(_connectedPlayer.Mario.Location.Position, remotePlayer.Mario.Location.Position));
 
-        var arePlayersFarApart = distance <= MaximumImmediateLocationUpdateDistance;
-
-        if (arePlayersFarApart)
+        foreach(var cutoff in DistanceCutoffs)
         {
-            return lastLog.Timestamp < DateTime.Now.Subtract(DistantProximityLocationUpdateFrequency);
+            if (distance > cutoff.Distance)
+            {
+                return lastLog.Timestamp < DateTime.Now.Subtract(cutoff.Frequency);
+            }
         }
 
         return true;
@@ -239,4 +248,6 @@ internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStra
         {
         }
     }
+
+    private record DistanceUpdateFrequency(float Distance, TimeSpan Frequency);
 }

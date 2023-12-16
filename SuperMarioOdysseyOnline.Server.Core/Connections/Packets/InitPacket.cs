@@ -12,6 +12,11 @@ public record InitPacket(Guid Id, InitData Data) : IPacket<InitData>, IPacket
     {
     }
 
+    public InitPacket(ushort maxPlayers)
+        : this(Guid.NewGuid(), new InitData(maxPlayers))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 

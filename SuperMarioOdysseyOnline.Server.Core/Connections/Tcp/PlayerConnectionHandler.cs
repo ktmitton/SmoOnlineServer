@@ -39,15 +39,18 @@ public class PlayerConnectionHandler(IServiceProvider serviceProvider, ILogger<P
                 return;
             }
 
+
             var connection = ActivatorUtilities.CreateInstance<TcpPacketConnection>(scope.ServiceProvider, context);
-            var connectPacket = await connection.ReceiveNextPacketAsync<ConnectPacket>(
-                CancellationTokenSource.CreateLinkedTokenSource(
+
+            var initializeCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
                     context.ConnectionClosed,
-                    new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token
-                ).Token
-            );
+                    new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token
+                ).Token;
+            var connectPacket = await connection.ReceiveNextPacketAsync<ConnectPacket>(initializeCancellationToken);
+            await connection.SendPacketAsync(new InitPacket(8), initializeCancellationToken);
 
             var player = lobby.GetOrAddPlayer(connectPacket.Id);
+
             var eventStream = ActivatorUtilities.CreateInstance<EventStream>(
                 scope.ServiceProvider,
                 lobby,

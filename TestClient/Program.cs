@@ -26,7 +26,7 @@ List<TcpClient> clients = new List<TcpClient>();
 
 async Task S(string n, Guid otherId, Guid ownId) {
     Logger logger = new Logger($"Client ({n})");
-    TcpClient client = new TcpClient(args[0], 1027);
+    TcpClient client = new TcpClient("127.0.0.1", 5486);
     clients.Add(client);
     NetworkStream stream = client.GetStream();
     logger.Info("Connected!");
@@ -63,7 +63,7 @@ async Task S(string n, Guid otherId, Guid ownId) {
         await stream.WriteAsync(connectOwner.Memory[..(Constants.HeaderSize + connect.Size)]);
         connectOwner.Dispose();
     }
-    
+
     while (true) {
         IMemoryOwner<byte> owner = MemoryPool<byte>.Shared.RentZero(0xFF);
         if (!await Read(owner.Memory, Constants.HeaderSize, 0)) return;
