@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{AB5DE676-F731-481C-909C-48905B6E5274}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{6CA2B314-2D79-46DC-9706-48E003A025BD}"
@@ -17,6 +17,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Core", "SuperMarioOdysseyOnline.Server.Core\SuperMarioOdysseyOnline.Server.Core.csproj", "{30FA5E99-BEDC-446F-B01C-130CE9F65209}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Lobby", "SuperMarioOdysseyOnline.Server.Lobby\SuperMarioOdysseyOnline.Server.Lobby.csproj", "{9ECC3840-BB12-4C09-AC14-6EEB038225F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Application", "SuperMarioOdysseyOnline.Server.Application\SuperMarioOdysseyOnline.Server.Application.csproj", "{8E25856A-FE0D-4174-B3E5-6792AA9E039F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +50,9 @@ Global
 		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

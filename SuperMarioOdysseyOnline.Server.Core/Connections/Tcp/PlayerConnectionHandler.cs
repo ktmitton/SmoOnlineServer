@@ -39,26 +39,39 @@ public class PlayerConnectionHandler(IServiceProvider serviceProvider, ILogger<P
                 return;
             }
 
-
             var connection = ActivatorUtilities.CreateInstance<TcpPacketConnection>(scope.ServiceProvider, context);
 
             var initializeCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(
                     context.ConnectionClosed,
                     new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token
                 ).Token;
-            var connectPacket = await connection.ReceiveNextPacketAsync<ConnectPacket>(initializeCancellationToken);
-            await connection.SendPacketAsync(new InitPacket(8), initializeCancellationToken);
 
-            var player = lobby.GetOrAddPlayer(connectPacket.Id);
+            try
+            {
+                var connectPacket = await connection.ReceiveNextPacketAsync<ConnectPacket>(initializeCancellationToken);
+                await connection.SendPacketAsync(new InitPacket(8), initializeCancellationToken);
 
-            var eventStream = ActivatorUtilities.CreateInstance<EventStream>(
-                scope.ServiceProvider,
-                lobby,
-                player,
-                connection
-            );
+                var player = lobby.GetOrAddPlayer(connectPacket.Id, connectPacket.Data.ClientName);
 
-            await eventStream.Task;
+                var eventStream = ActivatorUtilities.CreateInstance<EventStream>(
+                    scope.ServiceProvider,
+                    lobby,
+                    player,
+                    connection
+                );
+
+                await eventStream.Task;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                    exception,
+                    "[{ConnectionId}] An exception occurred while listening to the connection",
+                    context.ConnectionId
+                );
+
+                await connection.SendPacketAsync(new DisconnectPacket(), initializeCancellationToken);
+            }
         }
 
         _logger.LogInformation(

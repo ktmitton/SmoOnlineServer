@@ -35,6 +35,8 @@ internal class DefaultLobbyCollection(ILobbyFactory lobbyFactory, IOptions<Lobby
 
     public bool TryGetLobby(Guid id, [NotNullWhen(true)] out ILobby? lobby)
     {
-        throw new NotImplementedException();
+        lobby = _lobbies.Where(x => x.Value.Id == id).Select(x => x.Value).FirstOrDefault();
+
+        return lobby is not null;
     }
 }

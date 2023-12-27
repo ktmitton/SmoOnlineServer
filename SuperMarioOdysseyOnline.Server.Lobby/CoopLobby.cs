@@ -5,7 +5,7 @@ using SuperMarioOdysseyOnline.Server.Core.Lobby;
 namespace SuperMarioOdysseyOnline.Server.Lobby;
 
 [Lobby("Coop")]
-internal class CoopLobby(Guid id, string name) : ILobby
+public class CoopLobby(Guid id, string name) : ILobby
 {
     private readonly ConcurrentDictionary<Guid, IPlayer> _players = [];
 

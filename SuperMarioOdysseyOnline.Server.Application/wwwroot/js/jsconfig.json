@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "preact": ["./preact/preact.mjs"],
+      "preact/hooks": ["./preact/hooks/hooks.mjs"],
+    }
+  }
+}

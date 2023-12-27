@@ -11,6 +11,11 @@ public record DisconnectPacket(Guid Id, DisconnectData Data) : IPacket<Disconnec
     {
     }
 
+    public DisconnectPacket()
+        : this(Guid.NewGuid(), new DisconnectData(ReadOnlySequence<byte>.Empty))
+    {
+    }
+
     IPacketData IPacket<IPacketData>.Data => Data;
 }
 
