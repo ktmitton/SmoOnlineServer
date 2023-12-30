@@ -103,7 +103,7 @@ const RoundAction = ({lobbyId, round, isCurrentRound}) => {
 
   if (round.status === HideAndSeekRoundStatus.Completed) {
     return html`
-      <button type="button" class="btn btn-secondary btn-sm py-0 px-1" disabled>
+      <button type="button" class="btn btn-link btn-sm py-0 px-1" disabled>
         <span class="material-symbols-outlined align-text-top">check_circle</span>
       </button>
     `;
@@ -194,6 +194,11 @@ const ViewComponent = ({ lobby }) => {
     await fetch(`api/hideandseek/${lobby.id}/extendcurrentset/${seekersPerRound}`, { method: "POST" });
   };
 
+  /** @type {(playerId: string) => Promise} */
+  const tagPlayer = async (playerId) => {
+    await fetch(`api/hideandseek/${lobby.id}/tag/${playerId}`, { method: "POST" });
+  };
+
   return html`
     <div class="row">
       <div class="col-12 col-xl-4 d-flex align-items-stretch mb-3">
@@ -218,11 +223,17 @@ const ViewComponent = ({ lobby }) => {
                     <tr class="align-middle">
                       <td class="text-center">
                         ${player.isSeeking ? html`
-                          <span class="material-symbols-outlined align-text-top">search</span>
-                        ` : ""}
+                          <span class="btn btn-link p-0 disabled">
+                            <span class="material-symbols-outlined align-text-top">search</span>
+                          </span>
+                        ` : html`
+                          <button type="button" class="btn btn-secondary p-0" onClick=${() => tagPlayer(player.id)}>
+                            <span class="material-symbols-outlined align-text-top">touch_app</span>
+                          </button>
+                        `}
                       </td>
                       <td>${player.name}</td>
-                      <td>${player.totalTimeHidden.split(".")[0]}</td>
+                      <td>${player.timeHidden.split(".")[0]}</td>
                     </tr>
                   `)}
                 </tbody>
@@ -254,11 +265,11 @@ const ViewComponent = ({ lobby }) => {
                         <tr class="align-middle">
                           <td>${index + 1}</td>
                           <td>
-                            ${round.seekers.sort(playerCompare).map(player => html`
+                            ${round.initialSeekers.sort(playerCompare).map(player => html`
                               <span class="badge rounded-pill bg-success me-2">${player.name}</span>
                             `)}
                           </td>
-                          <td>${round.stage}</td>
+                          <td>${round.stage.kingdom}</td>
                           <td>${round.playTime.split(".")[0]}</td>
                           <td>
                             <${RoundAction} lobbyId=${lobby.id} round=${round} isCurrentRound=${round.id === lobby.currentRound.id} />

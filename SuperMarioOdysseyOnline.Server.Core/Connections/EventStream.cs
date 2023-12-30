@@ -1,4 +1,4 @@
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.Connections;

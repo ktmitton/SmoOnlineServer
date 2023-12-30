@@ -1,8 +1,8 @@
 using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 using SuperMarioOdysseyOnline.Server.Core.Models;
 
-namespace SuperMarioOdysseyOnline.Server.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 internal class Player(Guid id) : IPlayer
 {

@@ -2,7 +2,7 @@ using Bedrock.Framework.Protocols;
 using Microsoft.Extensions.DependencyInjection;
 using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
 using SuperMarioOdysseyOnline.Server.Core.Connections.Tcp;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.Extensions;

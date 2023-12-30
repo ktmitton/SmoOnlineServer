@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Text.Json.Serialization;
+
 namespace SuperMarioOdysseyOnline.Server.Core.World;
 
 [AttributeUsage(AttributeTargets.Field)]
@@ -7,7 +10,21 @@ public class StageAttribute(Kingdom kingdom, bool isHomeStage = false) : Attribu
 
     public bool IsHomeStage => isHomeStage;
 }
+public record StageDetails(Stage Stage, Kingdom Kingdom)
+{
+    public static StageDetails FromStage(Stage stage)
+        => new(
+            stage,
+            stage.GetType()
+                .GetMember(stage.ToString())
+                .First()
+                .GetCustomAttributes<StageAttribute>()
+                .First()
+                .Kingdom
+        );
+}
 
+[JsonConverter(typeof(JsonStringEnumConverter<Kingdom>))]
 public enum Kingdom
 {
     Cap,
@@ -30,6 +47,7 @@ public enum Kingdom
     Odyssey,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<Stage>))]
 public enum Stage
 {
     [Stage(Kingdom.Cap, true)]

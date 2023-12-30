@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
 

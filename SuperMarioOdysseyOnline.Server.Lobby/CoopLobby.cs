@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
+using SuperMarioOdysseyOnline.Server.Core.Connections;
 using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
 
-namespace SuperMarioOdysseyOnline.Server.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 [Lobby("Coop")]
 public class CoopLobby(Guid id, string name) : ILobby
@@ -72,5 +73,10 @@ public class CoopLobby(Guid id, string name) : ILobby
         }
 
         return updates;
+    }
+
+    public Task<IUpdateStrategy> CreateUpdateStrategyAsync(IPlayer player, IPacketConnection packetConnection, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

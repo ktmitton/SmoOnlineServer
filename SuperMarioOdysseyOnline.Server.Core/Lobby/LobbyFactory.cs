@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 public interface ILobbyFactory
 {

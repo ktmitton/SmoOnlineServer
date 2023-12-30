@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
 

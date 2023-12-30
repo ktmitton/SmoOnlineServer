@@ -1,5 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using SuperMarioOdysseyOnline.Server.Core.Connections;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
 
@@ -8,11 +9,15 @@ public interface IUpdateStrategyFactory
     Task<IUpdateStrategy> CreateAsync(ILobby lobby, IPlayer player, IPacketConnection packetConnection, CancellationToken cancellationToken);
 }
 
-internal class DefaultUpdateStrategyFactory : IUpdateStrategyFactory
+public class DefaultUpdateStrategyFactory(IServiceProvider serviceProvider) : IUpdateStrategyFactory
 {
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
+
     public Task<IUpdateStrategy> CreateAsync(ILobby lobby, IPlayer player, IPacketConnection packetConnection, CancellationToken cancellationToken)
     {
         IUpdateStrategy strategy = new DefaultUpdateStrategy(lobby, player);
+
+        _serviceProvider.GetKeyedService<IUpdateStrategy>(lobby.GetType());
 
         return Task.FromResult(strategy);
     }

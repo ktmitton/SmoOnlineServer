@@ -15,12 +15,12 @@ export interface IHideAndSeekPlayer {
   id: string,
   name: string,
   isSeeking: boolean,
-  totalTimeHidden: number
+  timeHidden: number
 }
 
 export interface IHideAndSeekRound {
-  seekers: IHideAndSeekPlayer[],
-  stage: string,
+  initialSeekers: IHideAndSeekPlayer[],
+  stage: {kingdom: string, stage: string},
   playTime: number,
   status: HideAndSeekRoundStatus
 }

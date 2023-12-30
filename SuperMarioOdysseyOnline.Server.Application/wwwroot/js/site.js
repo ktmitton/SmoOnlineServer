@@ -48,9 +48,11 @@ const App = ({ lobbies }) => {
         </div>
         <nav class="h-100 flex-grow-1" style="background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);">
           ${lobbies.map(lobby => html`
-            <div class="nav-item px-3">
-              <span class="material-symbols-outlined align-text-top me-1">${getIconNameForLobbyType(lobby.type)}</span>
-              ${lobby.name}
+            <div class="nav-item px-3 my-2">
+              <button type="button" class="btn w-100 btn-outline-light opacity-75 text-start py-2 ${lobby === selectedLobby  ? "active" : " "}">
+                <span class="material-symbols-outlined align-text-top me-1">${getIconNameForLobbyType(lobby.type)}</span>
+                ${lobby.name}
+              </button>
             </div>
           `)}
         </nav>

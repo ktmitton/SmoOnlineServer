@@ -1,7 +1,7 @@
 ﻿using System.Buffers;
 using System.Text;
 using SuperMarioOdysseyOnline.Server.Core.Extensions;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
 

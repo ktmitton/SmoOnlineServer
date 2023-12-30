@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 public class LobbyConfiguration
 {

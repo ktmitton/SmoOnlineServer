@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Microsoft.Extensions.Options;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 public interface ILobbyCollection : IEnumerable<ILobby>
 {

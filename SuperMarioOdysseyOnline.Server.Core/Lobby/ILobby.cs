@@ -1,6 +1,8 @@
+using SuperMarioOdysseyOnline.Server.Core.Connections;
 using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 public interface ILobby
 {
@@ -29,6 +31,8 @@ public interface ILobby
     IEnumerable<IPlayer> GetOpponents(IPlayer player) => Players.Where(x => x.Id != player.Id);
 
     void HandleReceivedPacket(IPlayer player, IPacket packet);
+
+    Task<IUpdateStrategy> CreateUpdateStrategyAsync(IPlayer player, IPacketConnection packetConnection, CancellationToken cancellationToken);
 
     IEnumerable<IPacket> GetNextUpdateCollection(IPlayer player) => Enumerable.Empty<IPacket>();
 }

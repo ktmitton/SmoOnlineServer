@@ -1,7 +1,7 @@
 using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
 using SuperMarioOdysseyOnline.Server.Core.Models;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Lobby;
+namespace SuperMarioOdysseyOnline.Server.Lobbies;
 
 public interface IPlayer
 {

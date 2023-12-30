@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 using SuperMarioOdysseyOnline.Server.Core.Extensions;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 using SuperMarioOdysseyOnline.Server.Core.Models;
 
 namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;

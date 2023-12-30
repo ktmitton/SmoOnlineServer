@@ -1,5 +1,5 @@
 using SuperMarioOdysseyOnline.Server.Core.Extensions;
-using SuperMarioOdysseyOnline.Server.Lobby.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobbies.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

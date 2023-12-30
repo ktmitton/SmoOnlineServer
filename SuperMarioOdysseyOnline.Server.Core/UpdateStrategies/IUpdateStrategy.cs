@@ -1,6 +1,6 @@
 using System.Numerics;
 using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Lobby;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 
 namespace SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
 
@@ -21,7 +21,7 @@ public interface IUpdateStrategy
 }
 
 
-internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrategy
+public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrategy
 {
     private readonly ILobby _lobby = lobby;
 
@@ -35,11 +35,6 @@ internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStra
     private static readonly TimeSpan DifferentStageLocationUpdateFrequency = TimeSpan.FromSeconds(1);
 
     /// <summary>
-    /// The frequency with which location updates should be sent for distant players on the same stage, regardless of last update values.
-    /// </summary>
-    private static readonly TimeSpan DistantProximityLocationUpdateFrequency = TimeSpan.FromMilliseconds(100);
-
-    /// <summary>
     /// The frequency with which cosmetic updates should be sent, regardless of last update values.
     /// </summary>
     private static readonly TimeSpan CosmeticFrequency = TimeSpan.FromSeconds(30);
@@ -48,15 +43,6 @@ internal class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStra
     /// The frequency with which stage updates should be sent, regardless of last update values.
     /// </summary>
     private static readonly TimeSpan StageUpdateFrequency = TimeSpan.FromSeconds(10);
-
-    /// <summary>
-    /// The maximum distance between players on the same stage where location details should be sent with every update.
-    /// </summary>
-    /// <remarks>
-    /// If two players on the same stage are further apart, location details will update based on <see cref="HighPriorityFrequency"/>.
-    /// If two players are on different stages, location details will update based on <see cref="LowPriorityFrequency"/>.
-    /// </remarks>
-    private const float MaximumImmediateLocationUpdateDistance = 10;
 
     private static readonly DistanceUpdateFrequency[] DistanceCutoffs =
     [
