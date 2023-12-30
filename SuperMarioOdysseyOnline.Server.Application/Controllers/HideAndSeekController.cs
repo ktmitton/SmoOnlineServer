@@ -1,6 +1,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using SuperMarioOdysseyOnline.Server.Core.World;
+using SuperMarioOdysseyOnline.Server.World;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 using SuperMarioOdysseyOnline.Server.Lobbies.HideAndSeek;
 using static SuperMarioOdysseyOnline.Server.Lobbies.HideAndSeek.Lobby;

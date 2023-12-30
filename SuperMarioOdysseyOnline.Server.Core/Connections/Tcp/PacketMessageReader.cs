@@ -1,9 +1,9 @@
 using System.Buffers;
 using Bedrock.Framework.Protocols;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Extensions;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Extensions;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Tcp;
+namespace SuperMarioOdysseyOnline.Server.Connections.Tcp;
 
 internal class PacketMessageReader : IMessageReader<IPacket?>
 {

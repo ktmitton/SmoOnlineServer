@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
+namespace SuperMarioOdysseyOnline.Server.Extensions;
 
 public static class WebApplicationExtensions
 {

@@ -1,9 +1,9 @@
 ﻿using System.Buffers;
 using System.Text;
-using SuperMarioOdysseyOnline.Server.Core.Extensions;
+using SuperMarioOdysseyOnline.Server.Extensions;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+namespace SuperMarioOdysseyOnline.Server.Connections.Packets;
 
 public record ConnectPacket(Guid Id, ConnectData Data) : IPacket<ConnectData>, IPacket
 {

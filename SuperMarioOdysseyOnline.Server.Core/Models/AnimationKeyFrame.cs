@@ -1,3 +1,3 @@
-namespace SuperMarioOdysseyOnline.Server.Core.Models;
+namespace SuperMarioOdysseyOnline.Server.Models;
 
 public record AnimationKeyFrame(ushort Act, ushort SubAct, float[] AnimationBlendWeights);

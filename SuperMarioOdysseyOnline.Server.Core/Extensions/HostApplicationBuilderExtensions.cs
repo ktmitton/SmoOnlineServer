@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
+namespace SuperMarioOdysseyOnline.Server.Extensions;
 
 public static class HostApplicationBuilderExtensions
 {

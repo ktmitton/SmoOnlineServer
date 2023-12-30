@@ -1,6 +1,6 @@
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections;
+namespace SuperMarioOdysseyOnline.Server.Connections;
 
 public interface IPacketConnection
 {

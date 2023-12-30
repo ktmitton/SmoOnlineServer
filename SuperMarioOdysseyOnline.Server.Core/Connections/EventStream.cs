@@ -1,7 +1,7 @@
 using SuperMarioOdysseyOnline.Server.Lobbies;
-using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
+using SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections;
+namespace SuperMarioOdysseyOnline.Server.Connections;
 
 internal class EventStream
 {

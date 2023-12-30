@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
-using SuperMarioOdysseyOnline.Server.Core.Connections;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
-using SuperMarioOdysseyOnline.Server.Core.World;
+using SuperMarioOdysseyOnline.Server.Connections;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.UpdateStrategies;
+using SuperMarioOdysseyOnline.Server.World;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies.HideAndSeek;
 

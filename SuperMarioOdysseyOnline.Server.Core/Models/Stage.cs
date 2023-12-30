@@ -1,4 +1,4 @@
-namespace SuperMarioOdysseyOnline.Server.Core.Models;
+namespace SuperMarioOdysseyOnline.Server.Models;
 
 public record Stage(byte Scenario, string Name, bool Is2d)
 {

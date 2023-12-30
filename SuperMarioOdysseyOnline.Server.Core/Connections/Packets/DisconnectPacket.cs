@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+namespace SuperMarioOdysseyOnline.Server.Connections.Packets;
 
 public record DisconnectPacket(Guid Id, DisconnectData Data) : IPacket<DisconnectData>, IPacket
 {

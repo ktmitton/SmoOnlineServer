@@ -1,11 +1,11 @@
 using Bedrock.Framework.Protocols;
 using Microsoft.Extensions.DependencyInjection;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Tcp;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Connections.Tcp;
 using SuperMarioOdysseyOnline.Server.Lobbies;
-using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
+using SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
+namespace SuperMarioOdysseyOnline.Server.Extensions;
 
 public static class ServiceCollectionExtensions
 {

@@ -1,4 +1,4 @@
-namespace SuperMarioOdysseyOnline.Server.Core.Models;
+namespace SuperMarioOdysseyOnline.Server.Models;
 
 public record Cappy(Location Location, Costume Costume, Animation Animation, bool IsThrown)
 {

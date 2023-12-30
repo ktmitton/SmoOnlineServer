@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Builder;
-using SuperMarioOdysseyOnline.Server.Core.Extensions;
+using SuperMarioOdysseyOnline.Server.Extensions;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies.Extensions;
 

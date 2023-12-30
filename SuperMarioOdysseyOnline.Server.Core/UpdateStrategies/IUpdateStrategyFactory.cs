@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using SuperMarioOdysseyOnline.Server.Core.Connections;
+using SuperMarioOdysseyOnline.Server.Connections;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
+namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
 public interface IUpdateStrategyFactory
 {

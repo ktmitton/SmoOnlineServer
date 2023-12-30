@@ -1,8 +1,8 @@
 using System.Numerics;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
+namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
 public interface IUpdateStrategy
 {

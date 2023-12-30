@@ -1,5 +1,5 @@
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Models;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Models;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies;
 

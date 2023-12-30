@@ -1,51 +1,6 @@
-using System.Reflection;
 using System.Text.Json.Serialization;
 
-namespace SuperMarioOdysseyOnline.Server.Core.World;
-
-[AttributeUsage(AttributeTargets.Field)]
-public class StageAttribute(Kingdom kingdom, bool isHomeStage = false) : Attribute
-{
-    public Kingdom Kingdom => kingdom;
-
-    public bool IsHomeStage => isHomeStage;
-}
-public record StageDetails(Stage Stage, Kingdom Kingdom)
-{
-    public static StageDetails FromStage(Stage stage)
-        => new(
-            stage,
-            stage.GetType()
-                .GetMember(stage.ToString())
-                .First()
-                .GetCustomAttributes<StageAttribute>()
-                .First()
-                .Kingdom
-        );
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter<Kingdom>))]
-public enum Kingdom
-{
-    Cap,
-    Cascade,
-    Sand,
-    Lake,
-    Wooded,
-    Cloud,
-    Lost,
-    Metro,
-    Snow,
-    Seaside,
-    Luncheon,
-    Ruined,
-    Bowsers,
-    Moon,
-    Mushroom,
-    DarkSide,
-    DarkerSide,
-    Odyssey,
-}
+namespace SuperMarioOdysseyOnline.Server.World;
 
 [JsonConverter(typeof(JsonStringEnumConverter<Stage>))]
 public enum Stage

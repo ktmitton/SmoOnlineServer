@@ -16,9 +16,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Core", "SuperMarioOdysseyOnline.Server.Core\SuperMarioOdysseyOnline.Server.Core.csproj", "{30FA5E99-BEDC-446F-B01C-130CE9F65209}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Lobby", "SuperMarioOdysseyOnline.Server.Lobby\SuperMarioOdysseyOnline.Server.Lobby.csproj", "{9ECC3840-BB12-4C09-AC14-6EEB038225F7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Application", "SuperMarioOdysseyOnline.Server.Application\SuperMarioOdysseyOnline.Server.Application.csproj", "{8E25856A-FE0D-4174-B3E5-6792AA9E039F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarioOdysseyOnline.Server.Lobbies", "SuperMarioOdysseyOnline.Server.Lobbies\SuperMarioOdysseyOnline.Server.Lobbies.csproj", "{8A573CFC-8861-4ECE-8760-ED7F2F50A28E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,13 +46,13 @@ Global
 		{30FA5E99-BEDC-446F-B01C-130CE9F65209}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30FA5E99-BEDC-446F-B01C-130CE9F65209}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30FA5E99-BEDC-446F-B01C-130CE9F65209}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9ECC3840-BB12-4C09-AC14-6EEB038225F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E25856A-FE0D-4174-B3E5-6792AA9E039F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A573CFC-8861-4ECE-8760-ED7F2F50A28E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A573CFC-8861-4ECE-8760-ED7F2F50A28E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A573CFC-8861-4ECE-8760-ED7F2F50A28E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A573CFC-8861-4ECE-8760-ED7F2F50A28E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

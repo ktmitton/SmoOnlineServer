@@ -1,7 +1,7 @@
 using System.Buffers;
-using SuperMarioOdysseyOnline.Server.Core.Extensions;
+using SuperMarioOdysseyOnline.Server.Extensions;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+namespace SuperMarioOdysseyOnline.Server.Connections.Packets;
 
 public interface IPacket : IPacket<IPacketData>
 {

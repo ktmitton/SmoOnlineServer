@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
-using SuperMarioOdysseyOnline.Server.Core.World;
+using SuperMarioOdysseyOnline.Server.World;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies.HideAndSeek;
 

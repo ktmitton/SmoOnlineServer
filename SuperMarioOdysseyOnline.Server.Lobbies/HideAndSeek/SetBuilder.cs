@@ -1,4 +1,4 @@
-using SuperMarioOdysseyOnline.Server.Core.World;
+using SuperMarioOdysseyOnline.Server.World;
 using SuperMarioOdysseyOnline.Server.Lobbies.Extensions;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies.HideAndSeek;

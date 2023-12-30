@@ -1,10 +1,10 @@
 ﻿using System.Buffers;
 using System.Text;
-using SuperMarioOdysseyOnline.Server.Core.Extensions;
+using SuperMarioOdysseyOnline.Server.Extensions;
 using SuperMarioOdysseyOnline.Server.Lobbies;
-using SuperMarioOdysseyOnline.Server.Core.Models;
+using SuperMarioOdysseyOnline.Server.Models;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+namespace SuperMarioOdysseyOnline.Server.Connections.Packets;
 
 public record PlayerStagePacket(Guid Id, PlayerStageData Data) : IPacket<PlayerStageData>, IPacket
 {

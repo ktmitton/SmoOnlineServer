@@ -1,6 +1,6 @@
 using System.Buffers;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
+namespace SuperMarioOdysseyOnline.Server.Extensions;
 
 internal static class SequenceReaderExtensions
 {

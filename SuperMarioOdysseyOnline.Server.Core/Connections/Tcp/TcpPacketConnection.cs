@@ -1,8 +1,8 @@
 using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Tcp;
+namespace SuperMarioOdysseyOnline.Server.Connections.Tcp;
 
 internal class TcpPacketConnection(
     ConnectionContext connectionContext,

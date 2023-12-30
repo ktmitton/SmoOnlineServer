@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Tcp;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.Connections.Tcp;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections;
+namespace SuperMarioOdysseyOnline.Server.Connections;
 
 public class PlayerConnectionHandler(IServiceProvider serviceProvider, ILogger<PlayerConnectionHandler> logger) : ConnectionHandler
 {

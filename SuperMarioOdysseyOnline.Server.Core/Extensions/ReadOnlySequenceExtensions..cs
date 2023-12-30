@@ -2,7 +2,7 @@ using System.Buffers;
 using System.Numerics;
 using System.Text;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Extensions;
+namespace SuperMarioOdysseyOnline.Server.Extensions;
 
 internal static class ReadOnlySequenceExtensions
 {

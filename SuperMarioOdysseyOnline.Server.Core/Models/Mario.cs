@@ -1,4 +1,4 @@
-namespace SuperMarioOdysseyOnline.Server.Core.Models;
+namespace SuperMarioOdysseyOnline.Server.Models;
 
 public record Mario(Location Location, Costume Costume, Animation Animation, CapturedEntity? CapturedEntity)
 {

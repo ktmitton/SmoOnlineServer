@@ -1,4 +1,4 @@
-namespace SuperMarioOdysseyOnline.Server.Core.Models;
+namespace SuperMarioOdysseyOnline.Server.Models;
 
 public record Costume(string Name)
 {

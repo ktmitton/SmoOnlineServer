@@ -1,6 +1,6 @@
-using SuperMarioOdysseyOnline.Server.Core.Connections;
-using SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
-using SuperMarioOdysseyOnline.Server.Core.UpdateStrategies;
+using SuperMarioOdysseyOnline.Server.Connections;
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
+using SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies;
 

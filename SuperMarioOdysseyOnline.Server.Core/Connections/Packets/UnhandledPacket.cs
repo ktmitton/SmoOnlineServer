@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Connections.Packets;
+namespace SuperMarioOdysseyOnline.Server.Connections.Packets;
 
 public record UnhandledPacket(Guid Id, UnhandledData Data) : IPacket<UnhandledData>, IPacket
 {

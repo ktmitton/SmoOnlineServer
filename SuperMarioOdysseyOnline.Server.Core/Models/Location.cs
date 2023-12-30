@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace SuperMarioOdysseyOnline.Server.Core.Models;
+namespace SuperMarioOdysseyOnline.Server.Models;
 
 public record Location(Vector3 Position, Quaternion Rotation)
 {
