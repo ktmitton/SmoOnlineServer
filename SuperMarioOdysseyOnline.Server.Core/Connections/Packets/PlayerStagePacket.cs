@@ -16,7 +16,7 @@ public record PlayerStagePacket(Guid Id, PlayerStageData Data) : IPacket<PlayerS
     }
 
     public PlayerStagePacket(IPlayer player)
-        : this(Guid.NewGuid(), new PlayerStageData(player))
+        : this(player.Id, new PlayerStageData(player))
     {
     }
 
@@ -41,12 +41,14 @@ public record PlayerStageData(Stage Stage) : IPacketData
     {
     }
 
-    public short Size => (short)(2 + Stage.Name.Length);
+    public short Size => 2 + StageNameSize;
+
+    private const short StageNameSize = 64;
 
     public byte[] ToByteArray()
         => [
             ..BitConverter.GetBytes(Stage.Is2d),
             Stage.Scenario,
-            ..Encoding.UTF8.GetBytes(Stage.Name)
+            ..Encoding.UTF8.GetBytes(Stage.Name.PadRight(StageNameSize, '\0'))
         ];
 }

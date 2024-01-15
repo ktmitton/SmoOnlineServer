@@ -11,24 +11,6 @@ namespace SuperMarioOdysseyOnline.Server.Application.Controllers;
 [ApiController]
 public class HideAndSeekController(ILobbyCollection lobbies) : ControllerBase
 {
-    private static readonly Kingdom[] _defaultBlacklistedKingdoms =
-    [
-        Kingdom.DarkSide,
-        Kingdom.DarkerSide,
-        Kingdom.Odyssey
-    ];
-
-    private static readonly Stage[] _defaultStagePool =
-        Enum.GetValues<Stage>()
-            .Where(x =>
-                x.GetType()
-                    .GetMember(x.ToString())
-                    .First()
-                    .GetCustomAttributes<StageAttribute>()
-                    .Any(x => x.IsHomeStage && !_defaultBlacklistedKingdoms.Contains(x.Kingdom))
-            )
-            .ToArray();
-
     private readonly ILobbyCollection _lobbies = lobbies;
 
     [HttpGet("{LobbyId}")]
@@ -47,24 +29,26 @@ public class HideAndSeekController(ILobbyCollection lobbies) : ControllerBase
         throw new ArgumentException($"Lobby id [{LobbyId}] was not a valid Hide and Seek lobby.");
     }
 
-    [HttpPost("{LobbyId}/createnewset/{SeekersPerRound}")]
-    public void CreateNewSet(Guid LobbyId, int SeekersPerRound)
+    [HttpGet("kingdoms")]
+    public IEnumerable<StageDetails> GetAvailableKingdoms()
     {
-        var defaultBlacklistedKingdoms = new Kingdom[]
-        {
-            Kingdom.DarkSide,
-            Kingdom.DarkerSide,
-            Kingdom.Odyssey
-        };
+        return Enum.GetValues<Stage>()
+            .Where(x =>
+                x.GetType()
+                    .GetMember(x.ToString())
+                    .First()
+                    .GetCustomAttributes<StageAttribute>()
+                    .Any(x => x.IsHomeStage)
+            )
+            .Append(Stage.ForestWorldWoodsStage)
+            .Select(stage => new StageDetails(stage));
+    }
 
-        var memberInfo = Enum.GetValues<Stage>().Where(x =>
-            x.GetType()
-                .GetMember(x.ToString())
-                .First()
-                .GetCustomAttributes<StageAttribute>()
-                .Any(x => x.IsHomeStage && !defaultBlacklistedKingdoms.Contains(x.Kingdom))
-        );
+    public record SetConfiguration(int SeekersPerRound, Stage[] Stages);
 
+    [HttpPost("{LobbyId}/createnewset")]
+    public void CreateNewSet(Guid LobbyId, [FromBody] SetConfiguration SetConfiguration)
+    {
         if (!_lobbies.TryGetLobby(LobbyId, out var lobby))
         {
             throw new Exception("lobby not found");
@@ -72,13 +56,13 @@ public class HideAndSeekController(ILobbyCollection lobbies) : ControllerBase
 
         if (lobby is Lobby hideAndSeek)
         {
-            hideAndSeek.InitializeNewSet(_defaultStagePool, SeekersPerRound);
+            hideAndSeek.InitializeNewSet(SetConfiguration.Stages, SetConfiguration.SeekersPerRound);
         }
 
     }
 
-    [HttpPost("{LobbyId}/extendcurrentset/{SeekersPerRound}")]
-    public void ExtendCurrentSet(Guid LobbyId, int SeekersPerRound)
+    [HttpPost("{LobbyId}/extendcurrentset")]
+    public void ExtendCurrentSet(Guid LobbyId, [FromBody] SetConfiguration SetConfiguration)
     {
         if (!_lobbies.TryGetLobby(LobbyId, out var lobby))
         {
@@ -87,7 +71,7 @@ public class HideAndSeekController(ILobbyCollection lobbies) : ControllerBase
 
         if (lobby is Lobby hideAndSeek)
         {
-            hideAndSeek.ExtendCurrentSet(_defaultStagePool, SeekersPerRound);
+            hideAndSeek.ExtendCurrentSet(SetConfiguration.Stages, SetConfiguration.SeekersPerRound);
         }
     }
 

@@ -9,7 +9,7 @@ public class Round(Stage stage, IEnumerable<IPlayer> initialSeekers, IEnumerable
 {
     public Guid Id { get; } = Guid.NewGuid();
 
-    public StageDetails Stage { get; } = StageDetails.FromStage(stage);
+    public StageDetails Stage { get; } = new StageDetails(stage);
 
     private readonly ImmutableArray<IPlayer> _initialSeekers = initialSeekers.ToImmutableArray();
 

@@ -23,7 +23,7 @@ public class LobbyController(ILobbyCollection lobbies) : ControllerBase
         );
     }
 
-    public record Details(Guid Id, string Name, LobbyType LobbyType);
+    public record Details(Guid Id, string Name, LobbyType Type);
 
     [JsonConverter(typeof(JsonStringEnumConverter<LobbyType>))]
     public enum LobbyType

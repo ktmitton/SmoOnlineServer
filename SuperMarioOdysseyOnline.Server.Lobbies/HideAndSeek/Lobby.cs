@@ -44,10 +44,10 @@ public class Lobby(Guid id, string name) : ILobby
     public Lobby(LobbyDetails lobbyDetails)
         : this(Guid.NewGuid(), lobbyDetails.Name)
     {
-        GetOrAddPlayer(Guid.NewGuid()).Name  = $"Hot Apple Toddy";
-        GetOrAddPlayer(Guid.NewGuid()).Name  = $"The Little Merman";
-        GetOrAddPlayer(Guid.NewGuid()).Name  = $"Solo Caravan";
-        GetOrAddPlayer(Guid.NewGuid()).Name  = $"The Smartest Idiot";
+        // GetOrAddPlayer(Guid.NewGuid()).Name  = $"Hot Apple Toddy";
+        // GetOrAddPlayer(Guid.NewGuid()).Name  = $"The Little Merman";
+        // GetOrAddPlayer(Guid.NewGuid()).Name  = $"Solo Caravan";
+        // GetOrAddPlayer(Guid.NewGuid()).Name  = $"The Smartest Idiot";
     }
 
     public void HandleReceivedPacket(IPlayer player, IPacket packet)

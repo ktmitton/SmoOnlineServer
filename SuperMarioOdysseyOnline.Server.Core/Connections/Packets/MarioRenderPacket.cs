@@ -15,7 +15,7 @@ public record MarioRenderPacket(Guid Id, MarioRenderData Data) : IPacket<MarioRe
     }
 
     public MarioRenderPacket(IPlayer player)
-        : this(Guid.NewGuid(), new MarioRenderData(player))
+        : this(player.Id, new MarioRenderData(player))
     {
     }
 

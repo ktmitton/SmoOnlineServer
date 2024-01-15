@@ -16,7 +16,7 @@ public record CostumePacket(Guid Id, CostumeData Data) : IPacket<CostumeData>, I
     }
 
     public CostumePacket(IPlayer player)
-        : this(Guid.NewGuid(), new CostumeData(player))
+        : this(player.Id, new CostumeData(player))
     {
     }
 

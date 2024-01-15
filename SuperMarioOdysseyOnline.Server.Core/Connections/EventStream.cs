@@ -1,3 +1,4 @@
+using SuperMarioOdysseyOnline.Server.Connections.Packets;
 using SuperMarioOdysseyOnline.Server.Lobbies;
 using SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
@@ -11,18 +12,17 @@ internal class EventStream
 
     private readonly IPacketConnection _connection;
 
-    private readonly IUpdateStrategyFactory _updateStrategyFactory;
-
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     public Task Task { get; private set; }
 
-    public EventStream(ILobby lobby, IPlayer player, IPacketConnection connection, IUpdateStrategyFactory updateStrategy)
+    private static readonly object _lock = new();
+
+    public EventStream(ILobby lobby, IPlayer player, IPacketConnection connection)
     {
         _lobby = lobby;
         _player = player;
         _connection = connection;
-        _updateStrategyFactory = updateStrategy;
 
         Task = CreateTask();
     }
@@ -32,7 +32,7 @@ internal class EventStream
 
     private async Task CreateTask()
     {
-        var updateStrategy = await _updateStrategyFactory.CreateAsync(_lobby, _player, _connection, _cancellationTokenSource.Token);
+        var updateStrategy = await _lobby.CreateUpdateStrategyAsync(_player, _connection, _cancellationTokenSource.Token);
 
         await Task.WhenAny(
             ListenForIncomingPacketsAsync(_cancellationTokenSource.Token),
@@ -61,6 +61,13 @@ internal class EventStream
             foreach(var update in updates)
             {
                 await _connection.SendPacketAsync(update, cancellationToken);
+                // lock (_lock)
+                // {
+                //     File.AppendAllText(
+                //         $"C:/Users/kdriv/OneDrive/Documents/projects/SmoOnlineServer/{_player.Id}.new.log",
+                //         $"{_player.Id} [{((PacketType)update.Type).ToString()} {update.Id}]: {string.Join(" ", update.ToByteArray())}\n"
+                //     );
+                // }
             }
 
             var executionTimespan = DateTime.Now - startTime;

@@ -12,7 +12,6 @@ public static class WebApplicationBuilderExtensions
 {
     public static WebApplicationBuilder AddSuperMarioOdysseyOnline(this WebApplicationBuilder builder)
     {
-        builder.Services.AddDefaultUpdateStrategyFactory();
         builder.Services.AddDefaultLobbyCollection();
         builder.Services.AddDefaultTcpPacketMessageHandlers();
 

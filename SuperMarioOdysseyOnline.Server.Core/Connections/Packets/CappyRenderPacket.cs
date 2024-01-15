@@ -16,7 +16,7 @@ public record CappyRenderPacket(Guid Id, CappyRenderData Data) : IPacket<CappyRe
     }
 
     public CappyRenderPacket(IPlayer player)
-        : this(Guid.NewGuid(), new CappyRenderData(player))
+        : this(player.Id, new CappyRenderData(player))
     {
     }
 

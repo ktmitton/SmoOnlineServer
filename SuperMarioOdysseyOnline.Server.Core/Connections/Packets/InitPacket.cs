@@ -13,7 +13,7 @@ public record InitPacket(Guid Id, InitData Data) : IPacket<InitData>, IPacket
     }
 
     public InitPacket(ushort maxPlayers)
-        : this(Guid.NewGuid(), new InitData(maxPlayers))
+        : this(Guid.Empty, new InitData(maxPlayers))
     {
     }
 

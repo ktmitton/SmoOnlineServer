@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <ProjectReference Include="..\SuperMarioOdysseyOnline.Server.Lobby\SuperMarioOdysseyOnline.Server.Lobby.csproj"/>
+      <ProjectReference Include="..\SuperMarioOdysseyOnline.Server.Lobbies\SuperMarioOdysseyOnline.Server.Lobbies.csproj"/>
       <ProjectReference Include="..\SuperMarioOdysseyOnline.Server.Core\SuperMarioOdysseyOnline.Server.Core.csproj"/>
   </ItemGroup>
 

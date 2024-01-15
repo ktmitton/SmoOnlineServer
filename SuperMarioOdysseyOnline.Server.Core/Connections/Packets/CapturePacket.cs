@@ -18,7 +18,7 @@ public record CapturePacket(Guid Id, CaptureData Data) : IPacket<CaptureData>, I
     }
 
     public CapturePacket(IPlayer player)
-        : this(Guid.NewGuid(), new CaptureData(player))
+        : this(player.Id, new CaptureData(player))
     {
     }
 }

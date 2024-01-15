@@ -14,9 +14,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ILobbyCollection, DefaultLobbyCollection>()
             .AddSingleton<ILobbyFactory, DefaultLobbyFactory>();
 
-    public static IServiceCollection AddDefaultUpdateStrategyFactory(this IServiceCollection serviceCollection)
-        => serviceCollection.AddTransient<IUpdateStrategyFactory, DefaultUpdateStrategyFactory>();
-
     public static IServiceCollection AddDefaultTcpPacketMessageReader(this IServiceCollection services)
         => services.AddSingleton<IMessageReader<IPacket?>, PacketMessageReader>();
 

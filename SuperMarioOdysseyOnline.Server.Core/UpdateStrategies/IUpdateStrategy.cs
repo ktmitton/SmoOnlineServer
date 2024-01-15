@@ -27,7 +27,7 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
 
     private readonly IPlayer _connectedPlayer = player;
 
-    public TimeSpan MinimumUpdatePeriod { get; } = TimeSpan.FromMilliseconds(10);
+    public TimeSpan MinimumUpdatePeriod { get; } = TimeSpan.FromMilliseconds(20);
 
     /// <summary>
     /// The frequency with which location updates should be sent for players on different stages, regardless of last update values.
@@ -57,59 +57,53 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
         => Task.CompletedTask;
 
     public IEnumerable<IPacket> GetNextUpdateCollection()
+        => _lobby.Players.Except([_connectedPlayer]).SelectMany(GetRemotePlayerUpdates);
+
+    private IEnumerable<IPacket> GetRemotePlayerUpdates(IPlayer remotePlayer)
     {
-        var playerUpdates = _lobby.Players.Where(x => x.Id != _connectedPlayer.Id).SelectMany(GetRemotePlayerUpdates);
-        var lobbyUpdates = _lobby.GetNextUpdateCollection(_connectedPlayer);
-
-        return [ ..playerUpdates, ..lobbyUpdates ];
-    }
-
-    public List<IPacket> GetRemotePlayerUpdates(IPlayer remotePlayer)
-    {
-        var updates = new List<IPacket>();
-
-        _playerUpdateLogs.TryGetValue(remotePlayer.Id, out var logs);
-
-        if (logs is null)
+        if (!_playerUpdateLogs.TryGetValue(remotePlayer.Id, out var logs))
         {
-            updates.Add(new ConnectPacket(remotePlayer));
+            yield return new ConnectPacket(remotePlayer);
 
             logs = PlayerUpdateLog.CreateDefault();
         }
 
-        if (ShouldSendRemotePlayerLocationUpdate(remotePlayer, logs.Mario))
-        {
-            updates.Add(new MarioRenderPacket(remotePlayer));
-            logs = logs with { Mario = new PlayerMarioLog() };
-        }
-
         if (ShouldSendCosutmeUpdate(remotePlayer, logs.Costume))
         {
-            updates.Add(new CostumePacket(remotePlayer));
+            yield return new CostumePacket(remotePlayer);
+
             logs = logs with { Costume = new PlayerCostumeLog(remotePlayer) };
+        }
+
+        if (ShouldSendStageUpdate(remotePlayer, logs.Stage))
+        {
+            yield return new PlayerStagePacket(remotePlayer);
+
+            logs = logs with { Stage = new PlayerStageLog(remotePlayer) };
+        }
+
+        if (ShouldSendRemotePlayerLocationUpdate(remotePlayer, logs.Mario))
+        {
+            yield return new MarioRenderPacket(remotePlayer);
+
+            logs = logs with { Mario = new PlayerMarioLog() };
         }
 
         if (ShouldSendCappyLocationUpdate(remotePlayer, logs.Cappy))
         {
-            updates.Add(new CappyRenderPacket(remotePlayer));
+            yield return new CappyRenderPacket(remotePlayer);
+
             logs = logs with { Cappy = new PlayerCappyLog(remotePlayer) };
         }
 
         if (ShouldSendCaptureUpdate(remotePlayer, logs.Capture))
         {
-            updates.Add(new CapturePacket(remotePlayer));
+            yield return new CapturePacket(remotePlayer);
+
             logs = logs with { Capture = new PlayerCaptureLog(remotePlayer) };
         }
 
-        if (ShouldSendStageUpdate(remotePlayer, logs.Stage))
-        {
-            updates.Add(new PlayerStagePacket(remotePlayer));
-            logs = logs with { Stage = new PlayerStageLog(remotePlayer) };
-        }
-
         _playerUpdateLogs[remotePlayer.Id] = logs;
-
-        return updates;
     }
 
     private bool ShouldSendRemotePlayerLocationUpdate(IPlayer remotePlayer, PlayerMarioLog lastLog)
@@ -169,12 +163,7 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
 
     private static bool ShouldSendStageUpdate(IPlayer remotePlayer, PlayerStageLog lastLog)
     {
-        if ((remotePlayer.Stage.Scenario == lastLog.Scenario) || !remotePlayer.Stage.Name.Equals(lastLog.Name))
-        {
-            return lastLog.Timestamp < DateTime.Now.Subtract(StageUpdateFrequency);
-        }
-
-        return true;
+        return (remotePlayer.Stage.Scenario != lastLog.Scenario) || !remotePlayer.Stage.Name.Equals(lastLog.Name);
     }
 
     private record PlayerUpdateLog(

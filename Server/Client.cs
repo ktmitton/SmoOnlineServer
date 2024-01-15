@@ -45,6 +45,7 @@ public class Client : IDisposable {
             Socket.Disconnect(false);
     }
 
+    private static readonly object _lock = new();
 
     public async Task Send<T>(T packet, Client? sender = null) where T : struct, IPacket {
         IMemoryOwner<byte> memory = MemoryPool<byte>.Shared.RentZero(Constants.HeaderSize + packet.Size);
@@ -63,6 +64,14 @@ public class Client : IDisposable {
         }
 
         await Socket!.SendAsync(memory.Memory[..(Constants.HeaderSize + packet.Size)], SocketFlags.None);
+
+        lock (_lock)
+        {
+            File.AppendAllText(
+                $"C:/Users/kdriv/OneDrive/Documents/projects/SmoOnlineServer/{Id}.legacy.log",
+                $"{Id} [{packetAttribute.Type} {sender?.Id ?? Id}]: {string.Join(" ", memory.Memory[..(Constants.HeaderSize + packet.Size)].ToArray())}\n"
+            );
+        }
         memory.Dispose();
     }
 
@@ -75,6 +84,14 @@ public class Client : IDisposable {
         }
 
         await Socket!.SendAsync(data[..(Constants.HeaderSize + header.PacketSize)], SocketFlags.None);
+
+        lock (_lock)
+        {
+            File.AppendAllText(
+                $"C:/Users/kdriv/OneDrive/Documents/projects/SmoOnlineServer/{Id}.legacy.log",
+                $"{Id} [{header.Type} {header.Id}]: {string.Join(" ",data[..(Constants.HeaderSize + header.PacketSize)].ToArray())}\n"
+            );
+        }
     }
 
     public void CleanMetadataOnNewConnection() {

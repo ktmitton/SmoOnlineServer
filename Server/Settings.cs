@@ -50,7 +50,7 @@ public class Settings {
 
     public class ServerTable {
         public string Address { get; set; } = IPAddress.Any.ToString();
-        public ushort Port { get; set; } = 1027;
+        public ushort Port { get; set; } = 5486;
         public ushort MaxPlayers { get; set; } = 8;
     }
 

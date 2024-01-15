@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using SuperMarioOdysseyOnline.Server.Extensions;
+using SuperMarioOdysseyOnline.Server.Lobbies;
 
 namespace SuperMarioOdysseyOnline.Server.Connections.Packets;
 
@@ -9,6 +10,11 @@ public record TagPacket(Guid Id, TagData Data) : IPacket<TagData>, IPacket
 
     public TagPacket(Guid id, ReadOnlySequence<byte> data)
         : this(id, new TagData(data))
+    {
+    }
+
+    public TagPacket(IPlayer player, bool isSeeking)
+        : this(player.Id, new TagData(TagFlags.State, isSeeking, default, default))
     {
     }
 
@@ -27,15 +33,18 @@ public record TagData(TagFlags UpdateType, bool IsIt, byte Seconds, ushort Minut
     {
     }
 
-    public short Size => sizeof(TagFlags) + sizeof(bool) + sizeof(byte) + sizeof(ushort);
+    public short Size => sizeof(TagFlags) + sizeof(bool) + sizeof(byte) + 1 + sizeof(ushort);
 
     public TimeSpan TimeSpan => TimeSpan.FromMinutes(Minutes).Add(TimeSpan.FromSeconds(Seconds));
+
+    private const byte Padding = 0;
 
     public byte[] ToByteArray()
         => [
             (byte)UpdateType,
             ..BitConverter.GetBytes(IsIt),
             Seconds,
+            Padding,
             ..BitConverter.GetBytes(Minutes)
         ];
 }
