@@ -5,19 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
             "name": "Server Launch",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build SuperMarioOdysseyOnline.Server.Basic",
-            // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Basic/bin/Debug/net8.0/SuperMarioOdysseyOnline.Server.Basic.dll",
             "args": [],
             "cwd": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Basic",
             "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
                 "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
@@ -32,19 +27,14 @@
             "request": "attach"
         },
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/bin/Debug/net8.0/SuperMarioOdysseyOnline.Server.Application.dll",
             "args": [],
             "cwd": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application",
             "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
                 "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
@@ -58,20 +48,24 @@
             }
         },
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Server/bin/Debug/net6.0/Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Server",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
+        },
+        {
+            "name": "Docker .NET Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "netCore": {
+                "appProject": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/SuperMarioOdysseyOnline.Server.Application.csproj"
+            }
         }
     ]
 }

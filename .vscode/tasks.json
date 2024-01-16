@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Basic/SuperMarioOdysseyOnline.Server.Basic.csproj",
+                "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Basic/SuperMarioOdysseyOnline.Server.Basic.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -72,6 +72,66 @@
                 "${workspaceFolder}/SmoMultiplayerServer.sln"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "smoonlineserver:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/SuperMarioOdysseyOnline.Server.Application.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "smoonlineserver:latest",
+                "dockerfile": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/Dockerfile",
+                "context": "${workspaceFolder}",
+                "platform": {
+                    "os": "linux",
+                    "architecture": "amd64"
+                },
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/SuperMarioOdysseyOnline.Server.Application.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/SuperMarioOdysseyOnline.Server.Application.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": [
+                "docker-build: release"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/SuperMarioOdysseyOnline.Server.Application/SuperMarioOdysseyOnline.Server.Application.csproj"
+            }
         }
     ]
 }

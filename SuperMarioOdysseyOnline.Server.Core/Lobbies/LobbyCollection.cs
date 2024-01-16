@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace SuperMarioOdysseyOnline.Server.Lobbies;
@@ -28,7 +29,24 @@ internal class DefaultLobbyCollection(ILobbyFactory lobbyFactory, IOptions<Lobby
 
     public bool TryGetLobby(EndPoint endpoint, [NotNullWhen(true)] out ILobby? lobby)
     {
-        lobby = _lobbies.Where(pair => pair.Key.EndPoint?.Equals(endpoint) ?? false).FirstOrDefault().Value;
+        lobby = _lobbies.Where(pair => {
+            if (pair.Key.EndPoint is null)
+            {
+                return false;
+            }
+
+            if (endpoint == pair.Key.EndPoint)
+            {
+                return true;
+            }
+
+            if (endpoint is IPEndPoint ipEndpoint && pair.Key.EndPoint is IPEndPoint lobbyIpEndpoint)
+            {
+                return ipEndpoint.Port == lobbyIpEndpoint.Port;
+            }
+
+            return false;
+        }).Select(x => x.Value).FirstOrDefault();
 
         return lobby is not null;
     }

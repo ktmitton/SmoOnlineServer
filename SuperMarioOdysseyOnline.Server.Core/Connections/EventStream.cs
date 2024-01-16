@@ -71,7 +71,6 @@ internal class EventStream
             }
 
             var executionTimespan = DateTime.Now - startTime;
-            Console.WriteLine(executionTimespan);
 
             if (executionTimespan < updateStrategy.MinimumUpdatePeriod)
             {
