@@ -49,11 +49,7 @@ public record MarioRenderData(Location Location, Animation Animation) : IPacketD
     {
     }
 
-    public short Size => (short)(
-        (sizeof(float) * 7) +
-        (sizeof(short) * 2) +
-        (sizeof(float) * (Animation.CurrentKeyFrame?.AnimationBlendWeights.Length ?? 0))
-    );
+    public short Size => (sizeof(float) * 7) + (sizeof(short) * 2) + (sizeof(float) * 6);
 
     public byte[] ToByteArray()
         => [
@@ -66,7 +62,12 @@ public record MarioRenderData(Location Location, Animation Animation) : IPacketD
             ..BitConverter.GetBytes(Location.Rotation.Z),
             ..BitConverter.GetBytes(Location.Rotation.W),
 
-            ..(Animation.CurrentKeyFrame?.AnimationBlendWeights ?? []).SelectMany(x => BitConverter.GetBytes(x)),
+            ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.AnimationBlendWeights.Weight0 ?? default),
+            ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.AnimationBlendWeights.Weight1 ?? default),
+            ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.AnimationBlendWeights.Weight2 ?? default),
+            ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.AnimationBlendWeights.Weight3 ?? default),
+            ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.AnimationBlendWeights.Weight4 ?? default),
+            ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.AnimationBlendWeights.Weight5 ?? default),
 
             ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.Act ?? default),
             ..BitConverter.GetBytes(Animation.CurrentKeyFrame?.SubAct ?? default)

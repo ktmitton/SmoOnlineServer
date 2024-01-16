@@ -15,7 +15,7 @@ const getIconNameForLobbyType = (lobbyType) => {
     case LobbyType.HideAndSeek:
       return "search";
     case LobbyType.Coop:
-      return "partner_exchange";
+      return "sprint";
     default:
       return "videogame_asset";
   }
@@ -51,9 +51,16 @@ const App = ({ lobbies }) => {
   `;
 };
 
-/**
- * @typedef {import('./Types').ILobby} ILobby
- */
+const setTheme = () => {
+  document.documentElement.setAttribute(
+    "data-bs-theme",
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
+}
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", setTheme);
+
+setTheme();
 
 const responseMessage = await fetch("/api/lobby/all");
 /** @type {ILobby[]} */

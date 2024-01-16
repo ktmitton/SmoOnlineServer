@@ -17,4 +17,23 @@ internal static class IEnumerableExtensions
             buffer[nextIndex] = buffer[i];
         }
     }
+
+    public static IEnumerable<IEnumerable<T>> ShuffleAndChunk<T>(this IEnumerable<T> source, int chunkSize, bool fillFinalChunk)
+    {
+        var chunks = source.Shuffle().Chunk(chunkSize);
+
+        foreach (var chunk in chunks)
+        {
+            if (!fillFinalChunk || (chunk.Length == chunkSize))
+            {
+                yield return chunk;
+            }
+            else
+            {
+                var fillers = source.Except(chunk).Shuffle().Take(chunkSize - chunk.Length).ToArray();
+
+                yield return chunk.Concat(fillers);
+            }
+        }
+    }
 }

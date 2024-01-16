@@ -68,7 +68,7 @@ public class Client : IDisposable {
         lock (_lock)
         {
             File.AppendAllText(
-                $"C:/Users/kdriv/OneDrive/Documents/projects/SmoOnlineServer/{Id}.legacy.log",
+                $"{Id}.legacy.log",
                 $"{Id} [{packetAttribute.Type} {sender?.Id ?? Id}]: {string.Join(" ", memory.Memory[..(Constants.HeaderSize + packet.Size)].ToArray())}\n"
             );
         }
@@ -88,7 +88,7 @@ public class Client : IDisposable {
         lock (_lock)
         {
             File.AppendAllText(
-                $"C:/Users/kdriv/OneDrive/Documents/projects/SmoOnlineServer/{Id}.legacy.log",
+                $"{Id}.legacy.log",
                 $"{Id} [{header.Type} {header.Id}]: {string.Join(" ",data[..(Constants.HeaderSize + header.PacketSize)].ToArray())}\n"
             );
         }

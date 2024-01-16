@@ -1,6 +1,7 @@
 using System.Numerics;
 using SuperMarioOdysseyOnline.Server.Connections.Packets;
 using SuperMarioOdysseyOnline.Server.Lobbies;
+using SuperMarioOdysseyOnline.Server.Models;
 
 namespace SuperMarioOdysseyOnline.Server.UpdateStrategies;
 
@@ -27,12 +28,14 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
 
     private readonly IPlayer _connectedPlayer = player;
 
-    public TimeSpan MinimumUpdatePeriod { get; } = TimeSpan.FromMilliseconds(20);
+    public TimeSpan MinimumUpdatePeriod { get; } = TimeSpan.FromMilliseconds(10);
 
     /// <summary>
     /// The frequency with which location updates should be sent for players on different stages, regardless of last update values.
     /// </summary>
     private static readonly TimeSpan DifferentStageLocationUpdateFrequency = TimeSpan.FromSeconds(1);
+
+    private static readonly TimeSpan MarioUnchangedUpdateFrequency = TimeSpan.FromSeconds(1);
 
     /// <summary>
     /// The frequency with which cosmetic updates should be sent, regardless of last update values.
@@ -86,7 +89,7 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
         {
             yield return new MarioRenderPacket(remotePlayer);
 
-            logs = logs with { Mario = new PlayerMarioLog() };
+            logs = logs with { Mario = new PlayerMarioLog(remotePlayer) };
         }
 
         if (ShouldSendCappyLocationUpdate(remotePlayer, logs.Cappy))
@@ -108,8 +111,13 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
 
     private bool ShouldSendRemotePlayerLocationUpdate(IPlayer remotePlayer, PlayerMarioLog lastLog)
     {
-        var arePlayersOnDifferentStages = _connectedPlayer.Stage.Scenario != remotePlayer.Stage.Scenario;
+        var hasMarioDataChanged = remotePlayer.Mario != lastLog.Mario;
+        if (!hasMarioDataChanged)
+        {
+            return lastLog.Timestamp < DateTime.Now.Subtract(MarioUnchangedUpdateFrequency);
+        }
 
+        var arePlayersOnDifferentStages = _connectedPlayer.Stage.Name != remotePlayer.Stage.Name;
         if (arePlayersOnDifferentStages)
         {
             return lastLog.Timestamp < DateTime.Now.Subtract(DifferentStageLocationUpdateFrequency);
@@ -143,7 +151,7 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
 
     private static bool ShouldSendCappyLocationUpdate(IPlayer remotePlayer, PlayerCappyLog lastLog)
     {
-        return remotePlayer.Cappy.IsThrown || lastLog.IsThrown;
+        return remotePlayer.Cappy != lastLog.Cappy;
     }
 
     private static bool ShouldSendCaptureUpdate(IPlayer remotePlayer, PlayerCaptureLog lastLog)
@@ -176,18 +184,23 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
     {
         public static PlayerUpdateLog CreateDefault()
             => new(
-                new PlayerMarioLog(DateTime.MinValue),
+                new PlayerMarioLog(),
                 new PlayerCostumeLog(DateTime.MinValue, string.Empty, string.Empty),
-                new PlayerCappyLog(DateTime.MinValue, default),
+                new PlayerCappyLog(DateTime.MinValue, new()),
                 new PlayerCaptureLog(DateTime.MinValue, string.Empty),
                 new PlayerStageLog(DateTime.MinValue, string.Empty, default)
             );
     }
 
-    private record PlayerMarioLog(DateTime Timestamp)
+    private record PlayerMarioLog(DateTime Timestamp, Mario Mario)
     {
         public PlayerMarioLog()
-            : this(DateTime.Now)
+            : this(DateTime.MinValue, new())
+        {
+        }
+
+        public PlayerMarioLog(IPlayer player)
+            : this(DateTime.Now, player.Mario)
         {
         }
     }
@@ -200,10 +213,10 @@ public class DefaultUpdateStrategy(ILobby lobby, IPlayer player) : IUpdateStrate
         }
     }
 
-    private record PlayerCappyLog(DateTime Timestamp, bool IsThrown)
+    private record PlayerCappyLog(DateTime Timestamp, Cappy Cappy)
     {
         public PlayerCappyLog(IPlayer player)
-            : this(DateTime.Now, player.Cappy.IsThrown)
+            : this(DateTime.Now, player.Cappy)
         {
         }
     }

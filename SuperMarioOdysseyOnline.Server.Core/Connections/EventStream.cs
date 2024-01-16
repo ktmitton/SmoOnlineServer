@@ -64,13 +64,14 @@ internal class EventStream
                 // lock (_lock)
                 // {
                 //     File.AppendAllText(
-                //         $"C:/Users/kdriv/OneDrive/Documents/projects/SmoOnlineServer/{_player.Id}.new.log",
+                //         $"{_player.Id}.new.log",
                 //         $"{_player.Id} [{((PacketType)update.Type).ToString()} {update.Id}]: {string.Join(" ", update.ToByteArray())}\n"
                 //     );
                 // }
             }
 
             var executionTimespan = DateTime.Now - startTime;
+            Console.WriteLine(executionTimespan);
 
             if (executionTimespan < updateStrategy.MinimumUpdatePeriod)
             {

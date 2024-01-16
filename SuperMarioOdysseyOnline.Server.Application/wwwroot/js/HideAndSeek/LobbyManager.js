@@ -42,6 +42,7 @@ const LobbyManager = () => {
               <th>${"\u00A0"}</th>
               <th>Name</th>
               <th>Time Hidden</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -49,17 +50,18 @@ const LobbyManager = () => {
               <tr class="align-middle" key=${player.id}>
                 <td class="text-center">
                   ${player.isSeeking ? html`
-                    <span class="btn btn-link p-0 disabled">
-                      <span class="material-symbols-outlined align-text-top">search</span>
-                    </span>
+                      <span class="material-symbols-outlined align-text-top">data_loss_prevention</span>
                   ` : html`
-                    <button type="button" class="btn btn-secondary p-0" onClick=${() => tagPlayer(player.id)}>
-                      <span class="material-symbols-outlined align-text-top">touch_app</span>
-                    </button>
+                      <span class="material-symbols-outlined align-text-top">directions_run</span>
                   `}
                 </td>
                 <td>${player.name}</td>
                 <td>${player.timeHidden.split(".")[0]}</td>
+                <td>
+                  <button type="button" class="btn btn-secondary p-0" onClick=${() => tagPlayer(player.id)} title="Switch Role">
+                      <span class="material-symbols-outlined align-text-top">swap_horiz</span>
+                  </button>
+                </td>
               </tr>
             `)}
           </tbody>

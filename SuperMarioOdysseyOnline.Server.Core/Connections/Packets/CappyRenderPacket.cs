@@ -39,7 +39,9 @@ public record CappyRenderData(Location Location, Animation Animation, bool IsThr
     {
     }
 
-    public short Size => (short)(sizeof(float) * 7 + sizeof(bool) + 3 + Animation.Name.Length);
+    private const short AnimationNameSize = 48;
+
+    public short Size => sizeof(float) * 7 + sizeof(bool) + 3 + AnimationNameSize;
 
     public byte[] ToByteArray()
         => [
@@ -55,6 +57,6 @@ public record CappyRenderData(Location Location, Animation Animation, bool IsThr
             ..BitConverter.GetBytes(IsThrown),
             0, 0, 0, // Buffer because the old packet has a size of 4 for the boolean?
 
-            ..Encoding.UTF8.GetBytes(Animation.Name)
+            ..Encoding.UTF8.GetBytes(Animation.Name.PadRight(AnimationNameSize, '\0')),
         ];
 }
